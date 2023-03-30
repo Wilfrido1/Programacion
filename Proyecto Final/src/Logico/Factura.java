@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Factura {
 	
 	private String codigo;
+	public static int numeroFactura = 1;
 	private ArrayList<Componente> misComponentes;
 	private Cliente cliente;
 	private ArrayList<Combo> misCombos;
