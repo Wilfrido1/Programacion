@@ -128,6 +128,44 @@ public class Tienda {
 		combo.setMisComponentes(componentes);
 		return 1;
 	}
+	
+	public void registrarCliente(Cliente cliente) {
+		misClientes.add(cliente);
+	}
+	
+	public Cliente buscarClientePorCedula(String Cedula) {
+		for(Cliente cliente : misClientes) {
+			if(cliente.getCedula().equals(Cedula)) {
+				return cliente;
+			}
+		}
+		return null;
+	}
+
+	public void registrarComponente(Componente componente) {
+		misComponentes.add(componente);
+	}
+	
+	/*public Componente buscarComponentePor (String ){
+	 * 	for(Componente componente: misComponentes){
+	 * 		if(componente.get
+	 * 		}
+	 * 
+	 * }
+	 */
+	
+	public void registrarCombo(Combo combo) {
+		misCombos.add(combo);
+	}
+	
+	public Combo buscarComboPorNombre(String Nombre) {
+		for(Combo combo : misCombos) {
+			if(combo.getNombre().equals(Nombre)) {
+				return combo;
+			}
+		}
+		return null;
+	}
 
 }
 
