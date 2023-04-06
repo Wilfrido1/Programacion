@@ -11,6 +11,7 @@ public class Tienda {
 	public static Tienda tienda = null;
 	private ArrayList<Combo> combosVendidos;
 	private ArrayList<Componente> componentesVendidos;
+	public static int codigo = 1;
 
 	public Tienda() {
 		super();
@@ -144,6 +145,7 @@ public class Tienda {
 
 	public void registrarComponente(Componente componente) {
 		misComponentes.add(componente);
+		codigo++;
 	}
 	
 	/*public Componente buscarComponentePor (String ){
