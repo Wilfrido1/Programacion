@@ -79,6 +79,10 @@ public class Tienda {
 	public void setCombosVendidos(ArrayList<Combo> combosVendidos) {
 		this.combosVendidos = combosVendidos;
 	}
+	
+	public void addCombo(Combo combo) {
+		misCombos.add(combo);
+	}
 
 
 	public ArrayList<Componente> getComponentesVendidos() {
@@ -125,7 +129,7 @@ public class Tienda {
 				}
 			}
 		}
-		Combo combo = new Combo(nombre);
+		Combo combo = new Combo(nombre, componentes);
 		combo.setMisComponentes(componentes);
 		return 1;
 	}
@@ -148,13 +152,15 @@ public class Tienda {
 		codigo++;
 	}
 	
-	/*public Componente buscarComponentePor (String ){
-	 * 	for(Componente componente: misComponentes){
-	 * 		if(componente.get
-	 * 		}
-	 * 
-	 * }
-	 */
+	public Componente buscarComponentePorNumSerie(String numSerie){
+	  	for(Componente componente: misComponentes){
+	  		if(componente.getNumSerie().equals(numSerie)){
+	  			return componente;
+	  		}
+	  	}
+	  	return null;
+	  }
+	 
 	
 	public void registrarCombo(Combo combo) {
 		misCombos.add(combo);
