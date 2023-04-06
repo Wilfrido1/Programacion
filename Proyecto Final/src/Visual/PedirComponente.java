@@ -102,7 +102,7 @@ public class PedirComponente extends JDialog {
 	 */
 	public PedirComponente() {
 		setTitle("Pedido de Componentes\r\n");
-		setBounds(100, 100, 806, 509);
+		setBounds(100, 100, 806, 421);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
