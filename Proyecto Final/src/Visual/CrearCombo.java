@@ -156,6 +156,7 @@ public class CrearCombo extends JDialog {
 		contentPanel.add(lblPrecio);
 		
 		txtPrecio = new JTextField();
+		txtPrecio.setEditable(false);
 		txtPrecio.setText("000");
 		txtPrecio.setBounds(356, 347, 86, 20);
 		contentPanel.add(txtPrecio);
@@ -187,6 +188,7 @@ public class CrearCombo extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		loadComponentes();
 	}
 	
 	public void loadComponentes() 

@@ -58,6 +58,9 @@ public class Principal extends JFrame {
 		JMenuItem mntmPedirComponente = new JMenuItem("Pedir Componente");
 		mntmPedirComponente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				PedirComponente pedirC = new PedirComponente();
+				pedirC.setModal(true);
+				pedirC.setVisible(true);
 			}
 		});
 		mnComponentes.add(mntmPedirComponente);
@@ -75,6 +78,9 @@ public class Principal extends JFrame {
 		JMenuItem mntmCrearCombo = new JMenuItem("Crear Combo");
 		mntmCrearCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				CrearCombo crearC = new CrearCombo();
+				crearC.setModal(true);
+				crearC.setVisible(true);
 			}
 		});
 		mnCombos.add(mntmCrearCombo);
