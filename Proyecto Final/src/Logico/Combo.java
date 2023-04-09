@@ -8,14 +8,14 @@ public class Combo {
 	private ArrayList<Componente> misComponentes;
 	private float precio;
 	
-	public Combo(String nombre, ArrayList<Componente>misComponentes) {
+	public Combo(String nombre, ArrayList<Componente>misComponentes, float precio) {
 		super();
 		this.nombre = nombre;
-		this.precio = calcularprecio();
+		this.precio = precio;           //calcularprecio();
 		misComponentes = new ArrayList<>();
 	}
 
-	private float calcularprecio() {
+	/*private float calcularprecio() {
 		// TODO Auto-generated method stub
 		float precio = 0;
 		for (Componente componente : misComponentes) {
@@ -23,7 +23,7 @@ public class Combo {
 		}
 		precio*=0.9;
 		return precio;
-	}
+	}*/
 
 	public String getNombre() {
 		return nombre;
@@ -43,6 +43,10 @@ public class Combo {
 
 	public float getPrecio() {
 		return precio;
+	}
+	
+	public void setPrecio(float precio) {
+		this.precio = precio;
 	}
 
 }

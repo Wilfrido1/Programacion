@@ -2,6 +2,7 @@ package Visual;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.TextField;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -12,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -58,7 +61,7 @@ public class CrearCombo extends JDialog {
 	 * Create the dialog.
 	 */
 	public CrearCombo() {
-		setBounds(100, 100, 516, 441);
+		setBounds(100, 100, 516, 396);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -66,7 +69,7 @@ public class CrearCombo extends JDialog {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 11, 480, 93);
+		panel.setBounds(10, 11, 480, 40);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		
@@ -81,7 +84,7 @@ public class CrearCombo extends JDialog {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 115, 480, 224);
+		panel_1.setBounds(10, 62, 480, 224);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -132,9 +135,12 @@ public class CrearCombo extends JDialog {
 				
 				if(index != -1) {
 					totalCosto = totalCosto - Tienda.getInstance().buscarComponentePorNumSerie(String.valueOf(modelListCombo.getElementAt(index))).getPrecio();
+					modelListCombo.removeElement(Tienda.getInstance().buscarComponentePorNumSerie(String.valueOf(modelListCombo.getElementAt(index))).getNumSerie());
 					
 					if(modelListCombo.getSize() == 0)
 						totalCosto = 0;
+					
+					txtPrecio.setText(String.valueOf(totalCosto));
 					
 					size--;
 				}
@@ -152,13 +158,13 @@ public class CrearCombo extends JDialog {
 		panel_1.add(lblComponentesCombo);
 		
 		JLabel lblPrecio = new JLabel("Precio: ");
-		lblPrecio.setBounds(317, 350, 46, 14);
+		lblPrecio.setBounds(314, 300, 46, 14);
 		contentPanel.add(lblPrecio);
 		
 		txtPrecio = new JTextField();
 		txtPrecio.setEditable(false);
-		txtPrecio.setText("000");
-		txtPrecio.setBounds(356, 347, 86, 20);
+		txtPrecio.setText("0.0");
+		txtPrecio.setBounds(356, 297, 86, 20);
 		contentPanel.add(txtPrecio);
 		txtPrecio.setColumns(10);
 		{
@@ -167,23 +173,38 @@ public class CrearCombo extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			
 			JButton btnCrearCombo = new JButton("Crear Combo");
-			btnCrearCombo.setEnabled(false);
 			btnCrearCombo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					if(textField.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+					else if(modelListCombo.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+					
 					ArrayList<Componente> componenteEnCombo = new ArrayList<>();
 					
-					for(int i = 0; i < size; i++) {
+					for(int i = 0; i < modelListCombo.getSize(); i++) {
 						componenteEnCombo.add(Tienda.getInstance().buscarComponentePorNumSerie(String.valueOf(modelListCombo.getElementAt(index))));
 					}
 					
-					Combo auxCombo = new Combo(Tienda.getInstance().toString(), componenteEnCombo);
+					//Combo auxCombo = new Combo(String.valueOf(textField), componenteEnCombo, totalCosto);
+					
+					//Combo auxCombo = new Combo(textField.getText(), componenteEnCombo, totalCosto);
+					//Combo combo = new Combo(textField.getText(), combo.getMisComponentes().addAll(ComponentesCombo), totalCosto);
 					Tienda.getInstance().addCombo(auxCombo);
+					JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
 					clean();
 				}
 			});
 			buttonPane.add(btnCrearCombo);
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

@@ -129,8 +129,8 @@ public class Tienda {
 				}
 			}
 		}
-		Combo combo = new Combo(nombre, componentes);
-		combo.setMisComponentes(componentes);
+		//Combo combo = new Combo(nombre, componentes);
+		//combo.setMisComponentes(componentes);
 		return 1;
 	}
 	
