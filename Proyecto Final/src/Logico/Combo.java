@@ -8,7 +8,7 @@ public class Combo {
 	private ArrayList<Componente> misComponentes;
 	private float precio;
 	
-	public Combo(String nombre, ArrayList<Componente>misComponentes, float precio) {
+	public Combo(String nombre, float precio) {
 		super();
 		this.nombre = nombre;
 		this.precio = precio;           //calcularprecio();

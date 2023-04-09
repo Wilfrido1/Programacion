@@ -78,7 +78,7 @@ public class Principal extends JFrame {
 		JMenuItem mntmCrearCombo = new JMenuItem("Crear Combo");
 		mntmCrearCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CrearCombo crearC = new CrearCombo();
+				CrearComboT crearC = new CrearComboT();
 				crearC.setModal(true);
 				crearC.setVisible(true);
 			}

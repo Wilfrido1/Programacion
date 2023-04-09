@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import Logico.Cliente;
 import Logico.Componente;
@@ -377,7 +376,6 @@ public class Facturar extends JDialog {
 		txtVProcesamiento.setBounds(239, 35, 153, 20);
 		pnlMicroprocesador.add(txtVProcesamiento);
 		txtVProcesamiento.setColumns(10);
-		pnlMicroprocesador.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSocket, lblVelocProces, lblUmedicion}));
 
 		pnlMemoriaRam = new JPanel();
 		pnlMemoriaRam.setVisible(false);
