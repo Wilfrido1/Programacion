@@ -82,6 +82,11 @@ public class Facturar extends JDialog {
 	private JTextField txtTipoMemoria;
 	private JTextField txtCantMemoria;
 	private JTextField txtUmedicionMR;
+	private JTextField txtMarca;
+	private JLabel lblModelo;
+	private JTextField txtModelo;
+	private JComboBox cbxFiltro;
+	private JLabel lblComponentesDisponibles;
 
 	/**
 	 * Launch the application.
@@ -104,7 +109,7 @@ public class Facturar extends JDialog {
 		componentesCarrito = new ArrayList<>();
 		modelCarrito = new DefaultListModel<String>();
 		modelDisponibles = new DefaultListModel<String>();
-		setBounds(100, 100, 718, 572);
+		setBounds(100, 100, 744, 572);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -259,7 +264,7 @@ public class Facturar extends JDialog {
 				}
 			}
 		});
-		btnDerecha.setBounds(200, 83, 89, 25);
+		btnDerecha.setBounds(191, 108, 105, 25);
 		panel_1.add(btnDerecha);
 
 		JButton btnIzquierda = new JButton("<<");
@@ -284,15 +289,15 @@ public class Facturar extends JDialog {
 				}
 			}
 		});
-		btnIzquierda.setBounds(200, 119, 89, 23);
+		btnIzquierda.setBounds(191, 149, 105, 23);
 		panel_1.add(btnIzquierda);
 
-		JLabel lblQuesosDisponibles = new JLabel("Componentes Disponibles");
-		lblQuesosDisponibles.setBounds(10, 11, 177, 14);
-		panel_1.add(lblQuesosDisponibles);
+		lblComponentesDisponibles = new JLabel("Componentes Disponibles");
+		lblComponentesDisponibles.setBounds(10, 11, 177, 14);
+		panel_1.add(lblComponentesDisponibles);
 
 		txtTotal = new JTextField();
-		txtTotal.setBounds(520, 188, 130, 20);
+		txtTotal.setBounds(520, 188, 149, 20);
 		panel_1.add(txtTotal);
 		txtTotal.setEditable(false);
 		txtTotal.setColumns(10);
@@ -304,43 +309,70 @@ public class Facturar extends JDialog {
 		JLabel lblCarritoDeCompra = new JLabel("Carrito de Compra");
 		lblCarritoDeCompra.setBounds(299, 11, 177, 14);
 		panel_1.add(lblCarritoDeCompra);
+		
+		JLabel lblMarca = new JLabel("Marca:");
+		lblMarca.setBounds(520, 11, 46, 14);
+		panel_1.add(lblMarca);
+		
+		txtMarca = new JTextField();
+		txtMarca.setEditable(false);
+		txtMarca.setBounds(520, 34, 149, 20);
+		panel_1.add(txtMarca);
+		txtMarca.setColumns(10);
+		
+		lblModelo = new JLabel("Modelo:");
+		lblModelo.setBounds(520, 88, 46, 14);
+		panel_1.add(lblModelo);
+		
+		txtModelo = new JTextField();
+		txtModelo.setEditable(false);
+		txtModelo.setColumns(10);
+		txtModelo.setBounds(520, 113, 149, 20);
+		panel_1.add(txtModelo);
+		
+		cbxFiltro = new JComboBox();
+		cbxFiltro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadDisponibles(cbxFiltro.getSelectedIndex());
+			}
+		});
+		cbxFiltro.setModel(new DefaultComboBoxModel(new String[] {"Componentes", "Combos"}));
+		cbxFiltro.setBounds(191, 68, 105, 20);
+		panel_1.add(cbxFiltro);
 
 
 		pnlMicroprocesador = new JPanel();
 		pnlMicroprocesador.setVisible(false);
 		pnlMicroprocesador.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlMicroprocesador.setBounds(10, 369, 775, 66);
+		pnlMicroprocesador.setBounds(10, 369, 696, 66);
 		contentPanel.add(pnlMicroprocesador);
 		pnlMicroprocesador.setLayout(null);
 
 		JLabel lblSocket = new JLabel("Tipo de Conexi\u00F3n:");
-		lblSocket.setBounds(10, 11, 96, 14);
+		lblSocket.setBounds(10, 11, 119, 14);
 		pnlMicroprocesador.add(lblSocket);
 
 		JLabel lblVelocProces = new JLabel("Velocidad de Procesamiento:");
-		lblVelocProces.setBounds(239, 11, 142, 14);
+		lblVelocProces.setBounds(239, 11, 167, 14);
 		pnlMicroprocesador.add(lblVelocProces);
 
 		JLabel lblUmedicion = new JLabel("Unidad de Medici\u00F3n:");
-		lblUmedicion.setBounds(496, 11, 109, 14);
+		lblUmedicion.setBounds(496, 11, 130, 14);
 		pnlMicroprocesador.add(lblUmedicion);
 		
 		txtSocket = new JTextField();
 		txtSocket.setEditable(false);
-		txtSocket.setEnabled(false);
 		txtSocket.setBounds(10, 35, 153, 20);
 		pnlMicroprocesador.add(txtSocket);
 		txtSocket.setColumns(10);
 		
 		txtUmedicionMP = new JTextField();
-		txtUmedicionMP.setEnabled(false);
 		txtUmedicionMP.setEditable(false);
 		txtUmedicionMP.setBounds(496, 35, 153, 20);
 		pnlMicroprocesador.add(txtUmedicionMP);
 		txtUmedicionMP.setColumns(10);
 		
 		txtVProcesamiento = new JTextField();
-		txtVProcesamiento.setEnabled(false);
 		txtVProcesamiento.setEditable(false);
 		txtVProcesamiento.setBounds(239, 35, 153, 20);
 		pnlMicroprocesador.add(txtVProcesamiento);
@@ -350,38 +382,35 @@ public class Facturar extends JDialog {
 		pnlMemoriaRam = new JPanel();
 		pnlMemoriaRam.setVisible(false);
 		pnlMemoriaRam.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlMemoriaRam.setBounds(10, 369, 775, 66);
+		pnlMemoriaRam.setBounds(10, 369, 696, 66);
 		contentPanel.add(pnlMemoriaRam);
 		pnlMemoriaRam.setLayout(null);
 
 		lblTipoMemoria = new JLabel("Tipo de Memoria:");
-		lblTipoMemoria.setBounds(10, 11, 96, 14);
+		lblTipoMemoria.setBounds(10, 11, 128, 14);
 		pnlMemoriaRam.add(lblTipoMemoria);
 
 		lblCantMemoria = new JLabel("Cantidad de Memoria:");
-		lblCantMemoria.setBounds(239, 11, 142, 14);
+		lblCantMemoria.setBounds(239, 11, 153, 14);
 		pnlMemoriaRam.add(lblCantMemoria);
 
 		label_4 = new JLabel("Unidad de Medici\u00F3n:");
-		label_4.setBounds(496, 11, 109, 14);
+		label_4.setBounds(496, 11, 128, 14);
 		pnlMemoriaRam.add(label_4);
 		
 		txtTipoMemoria = new JTextField();
-		txtTipoMemoria.setEnabled(false);
 		txtTipoMemoria.setEditable(false);
 		txtTipoMemoria.setBounds(10, 35, 153, 20);
 		pnlMemoriaRam.add(txtTipoMemoria);
 		txtTipoMemoria.setColumns(10);
 		
 		txtCantMemoria = new JTextField();
-		txtCantMemoria.setEnabled(false);
 		txtCantMemoria.setEditable(false);
 		txtCantMemoria.setBounds(239, 35, 153, 20);
 		pnlMemoriaRam.add(txtCantMemoria);
 		txtCantMemoria.setColumns(10);
 		
 		txtUmedicionMR = new JTextField();
-		txtUmedicionMR.setEnabled(false);
 		txtUmedicionMR.setEditable(false);
 		txtUmedicionMR.setBounds(496, 35, 153, 20);
 		pnlMemoriaRam.add(txtUmedicionMR);
@@ -390,38 +419,35 @@ public class Facturar extends JDialog {
 		pnlDiscoDuro = new JPanel();
 		pnlDiscoDuro.setVisible(false);
 		pnlDiscoDuro.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlDiscoDuro.setBounds(10, 369, 775, 66);
+		pnlDiscoDuro.setBounds(10, 369, 695, 66);
 		contentPanel.add(pnlDiscoDuro);
 		pnlDiscoDuro.setLayout(null);
 
 		lblTipoConexion = new JLabel("Tipo de Conexi\u00F3n :");
-		lblTipoConexion.setBounds(10, 11, 96, 14);
+		lblTipoConexion.setBounds(10, 11, 126, 14);
 		pnlDiscoDuro.add(lblTipoConexion);
 
 		lblCapacidadAlmac = new JLabel("Capacidad de Almacenamiento:");
-		lblCapacidadAlmac.setBounds(239, 11, 153, 14);
+		lblCapacidadAlmac.setBounds(239, 11, 170, 14);
 		pnlDiscoDuro.add(lblCapacidadAlmac);
 
 		label_2 = new JLabel("Unidad de Medici\u00F3n:");
-		label_2.setBounds(496, 11, 109, 14);
+		label_2.setBounds(496, 11, 140, 14);
 		pnlDiscoDuro.add(label_2);
 		
 		txtTipoConeccionDD = new JTextField();
-		txtTipoConeccionDD.setEnabled(false);
 		txtTipoConeccionDD.setEditable(false);
 		txtTipoConeccionDD.setBounds(10, 35, 153, 20);
 		pnlDiscoDuro.add(txtTipoConeccionDD);
 		txtTipoConeccionDD.setColumns(10);
 		
 		txtCapAlm = new JTextField();
-		txtCapAlm.setEnabled(false);
 		txtCapAlm.setEditable(false);
 		txtCapAlm.setBounds(239, 35, 153, 20);
 		pnlDiscoDuro.add(txtCapAlm);
 		txtCapAlm.setColumns(10);
 		
 		txtUmedicionDD = new JTextField();
-		txtUmedicionDD.setEnabled(false);
 		txtUmedicionDD.setEditable(false);
 		txtUmedicionDD.setBounds(496, 35, 153, 20);
 		pnlDiscoDuro.add(txtUmedicionDD);
@@ -430,19 +456,19 @@ public class Facturar extends JDialog {
 		pnlTarjetaMadre = new JPanel();
 		pnlTarjetaMadre.setLayout(null);
 		pnlTarjetaMadre.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlTarjetaMadre.setBounds(10, 369, 679, 96);
+		pnlTarjetaMadre.setBounds(10, 369, 696, 96);
 		contentPanel.add(pnlTarjetaMadre);
 
 		JLabel label = new JLabel("Tipo de Socket :");
-		label.setBounds(10, 11, 96, 14);
+		label.setBounds(10, 11, 114, 14);
 		pnlTarjetaMadre.add(label);
 
 		JLabel label_1 = new JLabel("Tipo de RAM: ");
-		label_1.setBounds(239, 11, 153, 14);
+		label_1.setBounds(239, 11, 168, 14);
 		pnlTarjetaMadre.add(label_1);
 
 		JLabel label_2 = new JLabel("Conexiones para Disco Duro:");
-		label_2.setBounds(496, 11, 153, 14);
+		label_2.setBounds(496, 11, 190, 14);
 		pnlTarjetaMadre.add(label_2);
 
 		checkBoxIDE = new JCheckBox("IDE");
@@ -466,14 +492,12 @@ public class Facturar extends JDialog {
 		pnlTarjetaMadre.add(checkBoxSata3);
 		
 		txtTConexion = new JTextField();
-		txtTConexion.setEnabled(false);
 		txtTConexion.setEditable(false);
 		txtTConexion.setBounds(10, 35, 153, 20);
 		pnlTarjetaMadre.add(txtTConexion);
 		txtTConexion.setColumns(10);
 		
 		txtTRam = new JTextField();
-		txtTRam.setEnabled(false);
 		txtTRam.setEditable(false);
 		txtTRam.setBounds(239, 35, 153, 20);
 		pnlTarjetaMadre.add(txtTRam);
@@ -527,6 +551,19 @@ public class Facturar extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+
+	protected void loadDisponibles(int index) {
+		// TODO Auto-generated method stub
+		if(index == 0) {
+			lblComponentesDisponibles.setText("Componentes Disponibles");
+			listDisponibles.setModel(modelDisponibles);
+		}
+		if(index == 1) {
+			lblComponentesDisponibles.setText("Combos Disponibles");
+			listDisponibles.setModel(modelCarrito);
+		}
+		
 	}
 
 	protected void totalCarrito() {
@@ -593,6 +630,9 @@ public class Facturar extends JDialog {
 	}
 
 	private void mostrarEspecificaciones(Componente componente) {
+		
+		txtMarca.setText(componente.getMarca());
+		txtModelo.setText(componente.getModelo());
 		
 		if(componente instanceof TarjetaMadre) {
 			
