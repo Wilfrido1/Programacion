@@ -12,6 +12,7 @@ public class Tienda {
 	public static Tienda tienda = null;
 	private ArrayList<Combo> combosVendidos;
 	private ArrayList<Componente> componentesVendidos;
+	private ArrayList<Componente> componentesEnCombo;
 	public static int codigo = 1;
 
 	public Tienda() {
@@ -21,6 +22,7 @@ public class Tienda {
 		misComponentes = new ArrayList<>();
 		combosVendidos = new ArrayList<>();
 		componentesVendidos = new ArrayList<>();
+		componentesEnCombo = new ArrayList<>();
 	}
 
 
@@ -85,6 +87,13 @@ public class Tienda {
 		misCombos.add(combo);
 	}
 
+	public ArrayList<Componente> getComponentesEnCombo(){
+		return componentesEnCombo;
+	}
+	
+	public void setComponentesEnCombo(ArrayList<Componente> componentesEnCombo) {
+		this.componentesEnCombo = componentesEnCombo;
+	}
 
 	public ArrayList<Componente> getComponentesVendidos() {
 		return componentesVendidos;

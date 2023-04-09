@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.DefaultComboBoxModel;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+
 
 import Logico.Componente;
 import Logico.DiscoDuro;
@@ -271,8 +271,7 @@ public class PedirComponente extends JDialog {
 		spnVelocidadProces.setModel(new SpinnerNumberModel(new Float(100), new Float(1), null, new Float(100)));
 		spnVelocidadProces.setBounds(239, 35, 153, 20);
 		pnlMicroprocesador.add(spnVelocidadProces);
-		pnlMicroprocesador.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSocket, cbxSocket, lblVelocProces, lblUmedicion, cbxUmedicionMP}));
-
+		
 		pnlMemoriaRam = new JPanel();
 		pnlMemoriaRam.setVisible(false);
 		pnlMemoriaRam.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -384,7 +383,6 @@ public class PedirComponente extends JDialog {
 		chckbxSATA3 = new JCheckBox("SATA-3");
 		chckbxSATA3.setBounds(614, 58, 97, 23);
 		pnlTarjetaMadre.add(chckbxSATA3);
-		contentPanel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{panel_1, lblCdigo, textcodigo, lblPrecioBase, lblCostoUnitario, spnPrecio, spnCantidad, lblMarca, txtMarca, lblModelo, txtModelo, panel, rdbMicroprocesador, rdbMemoriaRam, rdbDiscoDuro, rdbTarjetaMadre, lblSocket, cbxSocket, lblVelocProces, lblUmedicion, cbxUmedicionMP}));
 		{
 			buttonPane = new JPanel();
 			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -472,7 +470,6 @@ public class PedirComponente extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{contentPanel, panel_1, lblCdigo, textcodigo, lblPrecioBase, lblCostoUnitario, spnPrecio, spnCantidad, lblMarca, txtMarca, lblModelo, txtModelo, panel, rdbMicroprocesador, rdbMemoriaRam, rdbDiscoDuro, rdbTarjetaMadre, pnlMicroprocesador, lblSocket, cbxSocket, lblVelocProces, lblUmedicion, cbxUmedicionMP, buttonPane, okButton, cancelButton}));
 		updateCodigo();	
 	}
 
