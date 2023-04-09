@@ -173,7 +173,7 @@ public class CrearComboT extends JDialog {
 						modelCarrito.addElement(componente); 
 						componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
 						listComponentesCombo.setModel(modelCarrito);
-						totalCarrito();
+						totalPrecio();
 
 						if(modelDisponibles.getSize() !=0) {
 							modelDisponibles.removeElementAt(indice);
@@ -199,7 +199,7 @@ public class CrearComboT extends JDialog {
 					modelDisponibles.addElement(componente); 
 					componentesCarrito.remove(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
 					listComponentesDisponibles.setModel(modelDisponibles);
-					totalCarrito();
+					totalPrecio();
 
 					if(modelCarrito.getSize() !=0) {
 						modelCarrito.removeElementAt(indice);
@@ -437,7 +437,7 @@ public class CrearComboT extends JDialog {
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				//buttonPane.add(cancelButton);
 			}
 		}
 	
@@ -447,7 +447,7 @@ public class CrearComboT extends JDialog {
 		textNombreCombo.setText(null);
 }
 	
-	protected void totalCarrito() {
+	protected void totalPrecio() {
 		float total = 0;
 		for(Componente componente: componentesCarrito) {
 			total+= componente.getPrecio();
