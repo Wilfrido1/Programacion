@@ -1,6 +1,7 @@
 package Visual;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Panel;
 
@@ -72,6 +73,8 @@ public class CrearComboT extends JDialog {
 	private DefaultListModel<String> modelCarrito;
 	private DefaultListModel <String>modelDisponibles;
 	private JList listComponentesCombo;
+	private Container buttonPanel;
+	private Container buttonPane;
 
 	/**
 	 * Launch the application.
@@ -131,7 +134,7 @@ public class CrearComboT extends JDialog {
 		listComponentesDisponibles.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listComponentesDisponibles.getSelectedValue())));
+				mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listComponentesDisponibles.getSelectedValue().toString())));
 				}
 		});
 		scrollPane.setViewportView(listComponentesDisponibles);
@@ -399,7 +402,7 @@ public class CrearComboT extends JDialog {
 		textProcesamiento.setBounds(496, 35, 153, 20);
 		panelMicroprocesador.add(textProcesamiento);
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{

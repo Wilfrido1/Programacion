@@ -23,6 +23,7 @@ public class Tienda {
 		combosVendidos = new ArrayList<>();
 		componentesVendidos = new ArrayList<>();
 		componentesEnCombo = new ArrayList<>();
+		misCombos= new ArrayList<>();
 	}
 
 
