@@ -447,7 +447,6 @@ public class PedirComponente extends JDialog {
 							aux.setCantDisponible(cantidad);
 							for(int i = 0; i < cantidad; i++) {
 								Tienda.getInstance().registrarComponente(aux);
-								Tienda.codigo++;
 							}
 							JOptionPane.showMessageDialog(null, "Operacion Exitosa", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 							clean();
