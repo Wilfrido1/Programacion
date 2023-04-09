@@ -2,6 +2,7 @@ package Logico;
 
 import java.util.ArrayList;
 
+
 public class Tienda {
 
 	private ArrayList<Factura> misFacturas;
@@ -129,8 +130,8 @@ public class Tienda {
 				}
 			}
 		}
-		Combo combo = new Combo(nombre, componentes);
-		combo.setMisComponentes(componentes);
+		//Combo combo = new Combo(nombre, componentes);
+		//combo.setMisComponentes(componentes);
 		return 1;
 	}
 	
@@ -174,6 +175,25 @@ public class Tienda {
 		}
 		return null;
 	}
+	
+	public boolean clienteExiste(String cedula) {
+		for (Cliente cliente : misClientes) {
+			if(cliente.getCedula().equalsIgnoreCase(cedula)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public void insertarFactura(Factura factura) {
+		// TODO Auto-generated method stub
+		misFacturas.add(factura);
+		Factura.numeroFactura++;
+		
+	}
+	
+	
 
 }
 

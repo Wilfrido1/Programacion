@@ -1,8 +1,11 @@
 package Visual;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 
+import javax.swing.AbstractButton;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -10,23 +13,32 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import logical.Cliente;
-import logical.Factura;
-import logical.Queso;
-import logical.QuesoCilindrico;
-import logical.QuesoCilindricoH;
-import logical.QuesoEsferico;
-import logical.TiendaQueso;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import Logico.Cliente;
+import Logico.Componente;
+import Logico.DiscoDuro;
+import Logico.Factura;
+import Logico.MemoriaRam;
+import Logico.Microprocesador;
+import Logico.TarjetaMadre;
+import Logico.Tienda;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Facturar extends JDialog {
 
@@ -41,10 +53,35 @@ public class Facturar extends JDialog {
 	private JList<String> listCarrito;
 	private JScrollPane scrollPane_1;
 	private JTextField txtTotal;
-	private ArrayList<Queso> quesosCarrito;
+	private ArrayList<Componente> componentesCarrito;
 	private DefaultListModel<String> modelCarrito;
 	private DefaultListModel <String>modelDisponibles;
 	private JButton btnFacturar;
+	private JPanel pnlMicroprocesador;
+	private JPanel pnlMemoriaRam;
+	private JLabel lblTipoMemoria;
+	private JLabel lblCantMemoria;
+	private JLabel label_4;
+	private JPanel pnlDiscoDuro;
+	private JLabel lblTipoConexion;
+	private JLabel lblCapacidadAlmac;
+	private JLabel label_2;
+	private JCheckBox checkBoxIDE;
+	private JCheckBox checkBoxSata;
+	private JCheckBox checkBoxSata2;
+	private JCheckBox checkBoxSata3;
+	private JTextField txtTConexion;
+	private JTextField txtTRam;
+	private JTextField txtSocket;
+	private JPanel pnlTarjetaMadre;
+	private JTextField txtUmedicionMP;
+	private JTextField txtVProcesamiento;
+	private JTextField txtTipoConeccionDD;
+	private JTextField txtCapAlm;
+	private JTextField txtUmedicionDD;
+	private JTextField txtTipoMemoria;
+	private JTextField txtCantMemoria;
+	private JTextField txtUmedicionMR;
 
 	/**
 	 * Launch the application.
@@ -64,10 +101,10 @@ public class Facturar extends JDialog {
 	 */
 	public Facturar() {
 		setTitle("Facturacion de Quesos");
-		quesosCarrito = new ArrayList<>();
+		componentesCarrito = new ArrayList<>();
 		modelCarrito = new DefaultListModel<String>();
 		modelDisponibles = new DefaultListModel<String>();
-		setBounds(100, 100, 522, 476);
+		setBounds(100, 100, 718, 572);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -76,7 +113,7 @@ public class Facturar extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 11, 486, 122);
+		panel.setBounds(10, 11, 679, 122);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 
@@ -92,9 +129,9 @@ public class Facturar extends JDialog {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(TiendaQueso.getInstance().clienteExiste(txtCedula.getText())){
+				if(Tienda.getInstance().clienteExiste(txtCedula.getText())){
 					btnBuscar.setEnabled(false);
-					Cliente cliente = TiendaQueso.getInstance().buscarClienteByCedula(txtCedula.getText());
+					Cliente cliente = Tienda.getInstance().buscarClientePorCedula(txtCedula.getText());
 					txtCedula.setText(cliente.getCedula());
 					txtDireccion.setText(cliente.getDir());
 					txtNombre.setText(cliente.getNombre());
@@ -153,7 +190,7 @@ public class Facturar extends JDialog {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 139, 486, 219);
+		panel_1.setBounds(10, 139, 679, 219);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -166,12 +203,18 @@ public class Facturar extends JDialog {
 		panel_2.add(scrollPane, BorderLayout.CENTER);
 
 		listDisponibles = new JList<String>();
+		listDisponibles.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listDisponibles.getSelectedValue())));
+			}
+		});
 		scrollPane.setViewportView(listDisponibles);
 		{
-			String queso = null;
-			for (Queso aux : TiendaQueso.getInstance().getMisQuesos()) {
-				queso = aux.getCodigo() + " Volumen: " + Float.toString(aux.Volumen()) + " Precio: " + Float.toString(aux.precioT());
-				modelDisponibles.addElement(queso);
+			String componente = null;
+			for (Componente aux : Tienda.getInstance().getMisComponentes()) {
+				componente = aux.getNumSerie() + " ";
+				modelDisponibles.addElement(componente);
 			}
 			listDisponibles.setModel(modelDisponibles);
 
@@ -191,19 +234,19 @@ public class Facturar extends JDialog {
 		JButton btnDerecha = new JButton(">>");
 		btnDerecha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String queso = listDisponibles.getSelectedValue();
+				String componente = listDisponibles.getSelectedValue();
 				if(txtCedula.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtNombre.getText().isEmpty() || txtTelefono.getText().isEmpty() ) {
 					JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}else {
 
 
 					if(listDisponibles.getSelectedIndex() == -1) {
-						JOptionPane.showMessageDialog(rootPane, "NING\u00daN QUESO SELECCIONADO" , "ERROR", HEIGHT);
+						JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE SELECCIONADO" , "ERROR", HEIGHT);
 					}
 					else {
 						int indice = listDisponibles.getSelectedIndex();
-						modelCarrito.addElement(queso); 
-						quesosCarrito.add(TiendaQueso.getInstance().buscarQuesoByCodigo(codigoByQueso(queso)));
+						modelCarrito.addElement(componente); 
+						componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
 						listCarrito.setModel(modelCarrito);
 						totalCarrito();
 
@@ -222,15 +265,15 @@ public class Facturar extends JDialog {
 		JButton btnIzquierda = new JButton("<<");
 		btnIzquierda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String queso = listCarrito.getSelectedValue();
+				String componente = listCarrito.getSelectedValue();
 
 				if(listCarrito.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(rootPane, "NING\u00daN QUESO SELECCIONADO" , "ERROR", HEIGHT);
+					JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE SELECCIONADO" , "ERROR", HEIGHT);
 				}
 				else {
 					int indice = listCarrito.getSelectedIndex();
-					modelDisponibles.addElement(queso); 
-					quesosCarrito.remove(TiendaQueso.getInstance().buscarQuesoByCodigo(codigoByQueso(queso)));
+					modelDisponibles.addElement(componente); 
+					componentesCarrito.remove(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
 					listDisponibles.setModel(modelDisponibles);
 					totalCarrito();
 
@@ -244,23 +287,197 @@ public class Facturar extends JDialog {
 		btnIzquierda.setBounds(200, 119, 89, 23);
 		panel_1.add(btnIzquierda);
 
-		JLabel lblQuesosDisponibles = new JLabel("Quesos Disponibles");
+		JLabel lblQuesosDisponibles = new JLabel("Componentes Disponibles");
 		lblQuesosDisponibles.setBounds(10, 11, 177, 14);
 		panel_1.add(lblQuesosDisponibles);
 
-		JLabel lblCarritoDeCompra = new JLabel("Carrito de Compra");
-		lblCarritoDeCompra.setBounds(299, 9, 177, 14);
-		panel_1.add(lblCarritoDeCompra);
+		txtTotal = new JTextField();
+		txtTotal.setBounds(520, 188, 130, 20);
+		panel_1.add(txtTotal);
+		txtTotal.setEditable(false);
+		txtTotal.setColumns(10);
 
 		JLabel lblTotal = new JLabel("Total:");
-		lblTotal.setBounds(311, 369, 46, 14);
-		contentPanel.add(lblTotal);
+		lblTotal.setBounds(486, 191, 46, 14);
+		panel_1.add(lblTotal);
 
-		txtTotal = new JTextField();
-		txtTotal.setEditable(false);
-		txtTotal.setBounds(354, 366, 130, 20);
-		contentPanel.add(txtTotal);
-		txtTotal.setColumns(10);
+		JLabel lblCarritoDeCompra = new JLabel("Carrito de Compra");
+		lblCarritoDeCompra.setBounds(299, 11, 177, 14);
+		panel_1.add(lblCarritoDeCompra);
+
+
+		pnlMicroprocesador = new JPanel();
+		pnlMicroprocesador.setVisible(false);
+		pnlMicroprocesador.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlMicroprocesador.setBounds(10, 369, 775, 66);
+		contentPanel.add(pnlMicroprocesador);
+		pnlMicroprocesador.setLayout(null);
+
+		JLabel lblSocket = new JLabel("Tipo de Conexi\u00F3n:");
+		lblSocket.setBounds(10, 11, 96, 14);
+		pnlMicroprocesador.add(lblSocket);
+
+		JLabel lblVelocProces = new JLabel("Velocidad de Procesamiento:");
+		lblVelocProces.setBounds(239, 11, 142, 14);
+		pnlMicroprocesador.add(lblVelocProces);
+
+		JLabel lblUmedicion = new JLabel("Unidad de Medici\u00F3n:");
+		lblUmedicion.setBounds(496, 11, 109, 14);
+		pnlMicroprocesador.add(lblUmedicion);
+		
+		txtSocket = new JTextField();
+		txtSocket.setEditable(false);
+		txtSocket.setEnabled(false);
+		txtSocket.setBounds(10, 35, 153, 20);
+		pnlMicroprocesador.add(txtSocket);
+		txtSocket.setColumns(10);
+		
+		txtUmedicionMP = new JTextField();
+		txtUmedicionMP.setEnabled(false);
+		txtUmedicionMP.setEditable(false);
+		txtUmedicionMP.setBounds(496, 35, 153, 20);
+		pnlMicroprocesador.add(txtUmedicionMP);
+		txtUmedicionMP.setColumns(10);
+		
+		txtVProcesamiento = new JTextField();
+		txtVProcesamiento.setEnabled(false);
+		txtVProcesamiento.setEditable(false);
+		txtVProcesamiento.setBounds(239, 35, 153, 20);
+		pnlMicroprocesador.add(txtVProcesamiento);
+		txtVProcesamiento.setColumns(10);
+		pnlMicroprocesador.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSocket, lblVelocProces, lblUmedicion}));
+
+		pnlMemoriaRam = new JPanel();
+		pnlMemoriaRam.setVisible(false);
+		pnlMemoriaRam.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlMemoriaRam.setBounds(10, 369, 775, 66);
+		contentPanel.add(pnlMemoriaRam);
+		pnlMemoriaRam.setLayout(null);
+
+		lblTipoMemoria = new JLabel("Tipo de Memoria:");
+		lblTipoMemoria.setBounds(10, 11, 96, 14);
+		pnlMemoriaRam.add(lblTipoMemoria);
+
+		lblCantMemoria = new JLabel("Cantidad de Memoria:");
+		lblCantMemoria.setBounds(239, 11, 142, 14);
+		pnlMemoriaRam.add(lblCantMemoria);
+
+		label_4 = new JLabel("Unidad de Medici\u00F3n:");
+		label_4.setBounds(496, 11, 109, 14);
+		pnlMemoriaRam.add(label_4);
+		
+		txtTipoMemoria = new JTextField();
+		txtTipoMemoria.setEnabled(false);
+		txtTipoMemoria.setEditable(false);
+		txtTipoMemoria.setBounds(10, 35, 153, 20);
+		pnlMemoriaRam.add(txtTipoMemoria);
+		txtTipoMemoria.setColumns(10);
+		
+		txtCantMemoria = new JTextField();
+		txtCantMemoria.setEnabled(false);
+		txtCantMemoria.setEditable(false);
+		txtCantMemoria.setBounds(239, 35, 153, 20);
+		pnlMemoriaRam.add(txtCantMemoria);
+		txtCantMemoria.setColumns(10);
+		
+		txtUmedicionMR = new JTextField();
+		txtUmedicionMR.setEnabled(false);
+		txtUmedicionMR.setEditable(false);
+		txtUmedicionMR.setBounds(496, 35, 153, 20);
+		pnlMemoriaRam.add(txtUmedicionMR);
+		txtUmedicionMR.setColumns(10);
+
+		pnlDiscoDuro = new JPanel();
+		pnlDiscoDuro.setVisible(false);
+		pnlDiscoDuro.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlDiscoDuro.setBounds(10, 369, 775, 66);
+		contentPanel.add(pnlDiscoDuro);
+		pnlDiscoDuro.setLayout(null);
+
+		lblTipoConexion = new JLabel("Tipo de Conexi\u00F3n :");
+		lblTipoConexion.setBounds(10, 11, 96, 14);
+		pnlDiscoDuro.add(lblTipoConexion);
+
+		lblCapacidadAlmac = new JLabel("Capacidad de Almacenamiento:");
+		lblCapacidadAlmac.setBounds(239, 11, 153, 14);
+		pnlDiscoDuro.add(lblCapacidadAlmac);
+
+		label_2 = new JLabel("Unidad de Medici\u00F3n:");
+		label_2.setBounds(496, 11, 109, 14);
+		pnlDiscoDuro.add(label_2);
+		
+		txtTipoConeccionDD = new JTextField();
+		txtTipoConeccionDD.setEnabled(false);
+		txtTipoConeccionDD.setEditable(false);
+		txtTipoConeccionDD.setBounds(10, 35, 153, 20);
+		pnlDiscoDuro.add(txtTipoConeccionDD);
+		txtTipoConeccionDD.setColumns(10);
+		
+		txtCapAlm = new JTextField();
+		txtCapAlm.setEnabled(false);
+		txtCapAlm.setEditable(false);
+		txtCapAlm.setBounds(239, 35, 153, 20);
+		pnlDiscoDuro.add(txtCapAlm);
+		txtCapAlm.setColumns(10);
+		
+		txtUmedicionDD = new JTextField();
+		txtUmedicionDD.setEnabled(false);
+		txtUmedicionDD.setEditable(false);
+		txtUmedicionDD.setBounds(496, 35, 153, 20);
+		pnlDiscoDuro.add(txtUmedicionDD);
+		txtUmedicionDD.setColumns(10);
+
+		pnlTarjetaMadre = new JPanel();
+		pnlTarjetaMadre.setLayout(null);
+		pnlTarjetaMadre.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlTarjetaMadre.setBounds(10, 369, 679, 96);
+		contentPanel.add(pnlTarjetaMadre);
+
+		JLabel label = new JLabel("Tipo de Socket :");
+		label.setBounds(10, 11, 96, 14);
+		pnlTarjetaMadre.add(label);
+
+		JLabel label_1 = new JLabel("Tipo de RAM: ");
+		label_1.setBounds(239, 11, 153, 14);
+		pnlTarjetaMadre.add(label_1);
+
+		JLabel label_2 = new JLabel("Conexiones para Disco Duro:");
+		label_2.setBounds(496, 11, 153, 14);
+		pnlTarjetaMadre.add(label_2);
+
+		checkBoxIDE = new JCheckBox("IDE");
+		checkBoxIDE.setEnabled(false);
+		checkBoxIDE.setBounds(496, 32, 97, 23);
+		pnlTarjetaMadre.add(checkBoxIDE);
+
+		checkBoxSata = new JCheckBox("SATA");
+		checkBoxSata.setEnabled(false);
+		checkBoxSata.setBounds(496, 58, 97, 23);
+		pnlTarjetaMadre.add(checkBoxSata);
+
+		checkBoxSata2 = new JCheckBox("SATA-2");
+		checkBoxSata2.setEnabled(false);
+		checkBoxSata2.setBounds(614, 34, 97, 23);
+		pnlTarjetaMadre.add(checkBoxSata2);
+
+		checkBoxSata3 = new JCheckBox("SATA-3");
+		checkBoxSata3.setEnabled(false);
+		checkBoxSata3.setBounds(614, 58, 97, 23);
+		pnlTarjetaMadre.add(checkBoxSata3);
+		
+		txtTConexion = new JTextField();
+		txtTConexion.setEnabled(false);
+		txtTConexion.setEditable(false);
+		txtTConexion.setBounds(10, 35, 153, 20);
+		pnlTarjetaMadre.add(txtTConexion);
+		txtTConexion.setColumns(10);
+		
+		txtTRam = new JTextField();
+		txtTRam.setEnabled(false);
+		txtTRam.setEditable(false);
+		txtTRam.setBounds(239, 35, 153, 20);
+		pnlTarjetaMadre.add(txtTRam);
+		txtTRam.setColumns(10);
 
 		{
 			JPanel buttonPane = new JPanel();
@@ -274,20 +491,20 @@ public class Facturar extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(txtCedula.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtNombre.getText().isEmpty() || txtTelefono.getText().isEmpty() ) {
 							JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
-						}else if(quesosCarrito.isEmpty()) {
-							JOptionPane.showMessageDialog(null, "NO HAY QUESOS EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}else if(componentesCarrito.isEmpty()) {
+							JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}else {
-							if(!TiendaQueso.getInstance().clienteExiste(txtCedula.getText())) {
+							if(!Tienda.getInstance().clienteExiste(txtCedula.getText())) {
 								Cliente cliente = new Cliente(txtCedula.getText(),txtNombre.getText(),txtDireccion.getText(), txtTelefono.getText());
-								TiendaQueso.getInstance().insertarCliente(cliente);
+								Tienda.getInstance().registrarCliente(cliente);
 							}
 
-							TiendaQueso.getInstance().getQuesosVendidos().addAll(quesosCarrito);
-							TiendaQueso.getInstance().getMisQuesos().removeAll(quesosCarrito);
-							Factura factura = new Factura("Factura-"+Integer.toString(Factura.numeroFactura),TiendaQueso.getInstance().buscarClienteByCedula(txtCedula.getText()));
-							factura.getMisQuesos().addAll(quesosCarrito);
-							TiendaQueso.getInstance().insertarFactura(factura);
-							quesosCarrito.removeAll(quesosCarrito);
+							Tienda.getInstance().getComponentesVendidos().addAll(componentesCarrito);
+							Tienda.getInstance().getMisComponentes().removeAll(componentesCarrito);
+							Factura factura = new Factura("Factura-"+Integer.toString(Factura.numeroFactura),Tienda.getInstance().buscarClientePorCedula(txtCedula.getText()));
+							factura.getMisComponentes().addAll(componentesCarrito);
+							Tienda.getInstance().insertarFactura(factura);
+							componentesCarrito.removeAll(componentesCarrito);
 							modelCarrito.removeAllElements();
 							listCarrito.setModel(modelCarrito);
 							JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
@@ -314,8 +531,8 @@ public class Facturar extends JDialog {
 
 	protected void totalCarrito() {
 		float total = 0;
-		for (Queso queso : quesosCarrito) {
-			total+= queso.precioT();
+		for (Componente componente : componentesCarrito) {
+			total+= componente.getPrecio();
 		}
 
 		txtTotal.setText(Float.toString(total));
@@ -360,8 +577,92 @@ public class Facturar extends JDialog {
 	}
 
 	protected void insertarVendidos() {
-		for (Queso queso : quesosCarrito) {
-			TiendaQueso.getInstance().getQuesosVendidos().add(queso);
+		for (Componente componente : componentesCarrito) {
+			Tienda.getInstance().getComponentesVendidos().add(componente);
+		}
+	}
+	protected String codigoByComponente(String componente) {
+		int indice = componente.indexOf(" ");
+		String codigo = null;
+
+		if(indice != -1) {
+			codigo = componente.substring(0, indice);
+		}
+
+		return codigo;
+	}
+
+	private void mostrarEspecificaciones(Componente componente) {
+		
+		if(componente instanceof TarjetaMadre) {
+			
+			pnlTarjetaMadre.setVisible(true);
+			pnlDiscoDuro.setVisible(false);
+			pnlMicroprocesador.setVisible(false);
+			pnlMemoriaRam.setVisible(false);
+			String conector = ((TarjetaMadre) componente).getTipoConector();
+			String Ram = ((TarjetaMadre) componente).getTipoMemRam();
+			txtTConexion.setText(conector);
+			txtTRam.setText(Ram);
+			if(((TarjetaMadre) componente).getListaConexiones().contains(checkBoxIDE.getText())) {
+				checkBoxIDE.setSelected(true);
+			}
+			if(((TarjetaMadre) componente).getListaConexiones().contains(checkBoxSata.getText())) {
+				checkBoxSata.setSelected(true);
+			}
+			if(((TarjetaMadre) componente).getListaConexiones().contains(checkBoxSata2.getText())) {
+				checkBoxSata2.setSelected(true);
+			}
+			if(((TarjetaMadre) componente).getListaConexiones().contains(checkBoxSata3.getText())) {
+				checkBoxSata3.setSelected(true);
+			}
+		}
+		
+		if(componente instanceof Microprocesador) {
+			pnlTarjetaMadre.setVisible(false);
+			pnlDiscoDuro.setVisible(false);
+			pnlMicroprocesador.setVisible(true);
+			pnlMemoriaRam.setVisible(false);
+			
+			String socket = ((Microprocesador) componente).getTipoConexion();
+			String unidad = ((Microprocesador) componente).getUnidadMedicion();
+			String velocidad = Float.toString(((Microprocesador) componente).getVelocidadProcesamiento());
+			
+			txtVProcesamiento.setText(velocidad);
+			txtSocket.setText(socket);
+			txtUmedicionMP.setText(unidad);
+		}
+		
+		if(componente instanceof DiscoDuro) {
+			pnlTarjetaMadre.setVisible(false);
+			pnlDiscoDuro.setVisible(true);
+			pnlMicroprocesador.setVisible(false);
+			pnlMemoriaRam.setVisible(false);
+			
+			String tipoC = ((DiscoDuro) componente).getTipoConexion();
+			String capacidad = Float.toString(((DiscoDuro) componente).getCapAlmacenamiento());
+			String unidad = ((DiscoDuro) componente).getUnidadMedicion();
+			
+			txtCapAlm.setText(capacidad);
+			txtTipoConeccionDD.setText(tipoC);
+			txtUmedicionDD.setText(unidad);
+		}
+		
+		if(componente instanceof MemoriaRam) {
+			pnlTarjetaMadre.setVisible(false);
+			pnlDiscoDuro.setVisible(false);
+			pnlMicroprocesador.setVisible(false);
+			pnlMemoriaRam.setVisible(true);
+			
+			String tipoRam = ((MemoriaRam) componente).getTipoMemoria();
+			String cantMemoria = Float.toString(((MemoriaRam) componente).getCantMemoria());
+			String unidad = ((MemoriaRam) componente).getUnidadMedicion();
+			
+			txtTipoMemoria.setText(tipoRam);
+			txtUmedicionMR.setText(unidad);
+			txtCantMemoria.setText(cantMemoria);
+			
+			
 		}
 	}
 }

@@ -10,12 +10,12 @@ public class Factura {
 	private Cliente cliente;
 	private ArrayList<Combo> misCombos;
 	
-	public Factura(String codigo, ArrayList<Componente> misComponentes, Cliente cliente, ArrayList<Combo> misCombos) {
+	public Factura(String codigo, Cliente cliente) {
 		super();
 		this.codigo = codigo;
-		this.misComponentes = misComponentes;
+		misComponentes = new ArrayList<>();
 		this.cliente = cliente;
-		this.misCombos = misCombos;
+		misCombos = new ArrayList<>();
 	}
 
 	public String getCodigo() {
