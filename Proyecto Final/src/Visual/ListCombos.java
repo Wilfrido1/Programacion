@@ -2,6 +2,7 @@ package Visual;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.TextField;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -25,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class ListCombos extends JDialog {
 
@@ -50,8 +52,10 @@ public class ListCombos extends JDialog {
 	private JPanel panelMicroProcesador;
 	private JList listComponentesEnCombo;
 	private JList listCombos;
-	private DefaultListModel<String> modelComboDisp;
-	private DefaultListModel <String>modelComponenteEnCombo;
+	private DefaultListModel<String> modelComboDisp = new DefaultListModel<>();
+	private DefaultListModel <String>modelComponenteEnCombo = new DefaultListModel<>();
+	private ArrayList<Componente> componentesEnCombo = new ArrayList<>();
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -93,13 +97,32 @@ public class ListCombos extends JDialog {
 		listCombos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				String nomb = (String)listCombos.getSelectedValue();
+				Combo combo = Tienda.getInstance().buscarComboPorNombre(nomb);
+				textField.setText(combo.getNombre());
+				//if(combo != null) {
+					TarjetaMadre prueba = new TarjetaMadre((float)1500, "Nomb", "1", "2", "3","4");
+					componentesEnCombo.add(prueba);
+					modelComponenteEnCombo.addElement("Nombre");
+				componentesEnCombo = combo.getMisComponentes();
+				for(Componente comp : componentesEnCombo)
+				{
+					modelComponenteEnCombo.addElement(comp.getNumSerie());
+				}
+						
+				
+				/*if (componentesEnCombo.isEmpty()) {
+				    textField.setText("Vacio");
+				}*/
+
 				
 			}
 		});
 		scrollPane.setViewportView(listCombos);{
 			String combo = null;
 			for(Combo aux : Tienda.getInstance().getMisCombos()) {
-				combo = aux.getNombre() + " ";
+				//combo = aux.getNombre() + " ";
+				combo = aux.getNombre();
 				modelComboDisp.addElement(combo);
 			}
 			listCombos.setModel(modelComboDisp);
@@ -113,14 +136,31 @@ public class ListCombos extends JDialog {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		panel_2.add(scrollPane_1, BorderLayout.CENTER);
 		
-		listComponentesEnCombo = new JList();
+		listComponentesEnCombo = new JList(modelComponenteEnCombo);
 		listComponentesEnCombo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listComponentesEnCombo.getSelectedValue())));
+				//mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listComponentesEnCombo.getSelectedValue().toString())));
+				//int indexCompComb = listComponentesEnCombo.getSelectedIndex();
+				
+				String nombComp = (String)listComponentesEnCombo.getSelectedValue();
+				textField.setText(nombComp);
+				String nombtuti = Tienda.getInstance().buscarComponentePorNumSerie("TM-1").getNumSerie();
+
+			//	textRam.setText(nombtuti);
+			//	
+
+				
+			//	mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(nombComp)));
+
+				
+				//modelComponenteEnCombo.getElementAt(index)
 			}
 		});
 		scrollPane_1.setViewportView(listComponentesEnCombo);
+		{
+			mostrarComponentes();
+		}
 		
 		JLabel lblNombreCombo = new JLabel("Combos Disponibles:");
 		lblNombreCombo.setBounds(10, 11, 256, 14);
@@ -129,6 +169,12 @@ public class ListCombos extends JDialog {
 		JLabel lblComponentesCombo = new JLabel("Componentes Del Combo: ");
 		lblComponentesCombo.setBounds(413, 11, 256, 14);
 		panel.add(lblComponentesCombo);
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setBounds(292, 48, 86, 20);
+		panel.add(textField);
+		textField.setColumns(10);
 		
 		panelTarjetaMadre = new JPanel();
 		panelTarjetaMadre.setLayout(null);
@@ -321,7 +367,11 @@ public class ListCombos extends JDialog {
 		return codigo;
 	}
 	
-protected void mostrarEspecificaciones(Componente componente) {
+	protected void mostrarComponentes() {
+		modelComponenteEnCombo.addElement("Nombre");
+	}
+	
+	protected void mostrarEspecificaciones(Componente componente) {
 		
 		if(componente instanceof TarjetaMadre) {
 			panelTarjetaMadre.setVisible(true);

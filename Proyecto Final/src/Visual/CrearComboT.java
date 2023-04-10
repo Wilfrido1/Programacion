@@ -103,7 +103,7 @@ public class CrearComboT extends JDialog {
 		contentPanel.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 466, 43);
+		panel.setBounds(10, 11, 522, 43);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		
@@ -112,7 +112,7 @@ public class CrearComboT extends JDialog {
 		panel.add(lblNombre);
 		
 		textNombreCombo = new JTextField();
-		textNombreCombo.setBounds(114, 11, 342, 20);
+		textNombreCombo.setBounds(134, 11, 342, 20);
 		panel.add(textNombreCombo);
 		textNombreCombo.setColumns(10);
 		
