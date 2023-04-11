@@ -161,28 +161,51 @@ public class CrearComboT extends JDialog {
 		JButton btnDerecha = new JButton(">>");
 		btnDerecha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int indcombo = 0;
 				String componente = (String) listComponentesDisponibles.getSelectedValue();
-				if(textNombreCombo.getText().isEmpty()){
+				Componente componenteE = Tienda.getInstance().buscarComponentePorNumSerie(componente);
+				
+				//String componenteEnCombo 
+				//Componente componenteC = (Componente) listComponentesCombo.getSelectedValue();
+				if(textNombreCombo.getText().isEmpty()){	
 					JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
-				}//else{
-
+				}
 
 					if(listComponentesDisponibles.getSelectedIndex() == -1) {
 						JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE SELECCIONADO" , "ERROR", HEIGHT);
 					}
-					else {
-						int indice = listComponentesDisponibles.getSelectedIndex();
-						modelCarrito.addElement(componente); 
-						componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
-						listComponentesCombo.setModel(modelCarrito);
-						totalPrecio();
 
-						if(modelDisponibles.getSize() !=0) {
-							modelDisponibles.removeElementAt(indice);
+						if(indcombo != 0) {
+							for(Componente comp : componentesCarrito) {
+								Componente componenteEnCombo = Tienda.getInstance().buscarComponentePorNumSerie(String.valueOf(comp)); 
+							if(validacion(componenteE, componenteEnCombo) != 0 ) {
+								JOptionPane.showMessageDialog(rootPane, "El componente no es compatible", "ERROR", HEIGHT);
+							}
+							else {
+								int indice = listComponentesDisponibles.getSelectedIndex();
+								modelCarrito.addElement(componente); 
+								componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
+								listComponentesCombo.setModel(modelCarrito);
+								totalPrecio();
+
+								
+								listComponentesDisponibles.setModel(modelDisponibles);
+							    activarCombo();
+							}
+							}
 						}
-						listComponentesDisponibles.setModel(modelDisponibles);
-					    activarCombo();
-					}
+						else{
+							int indice = listComponentesDisponibles.getSelectedIndex();
+							modelCarrito.addElement(componente); 
+							indcombo++;
+							componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
+							listComponentesCombo.setModel(modelCarrito);
+							totalPrecio();
+
+							listComponentesDisponibles.setModel(modelDisponibles);
+						    activarCombo();
+						}
+					
 				}
 			});
 		btnDerecha.setBounds(187, 61, 89, 23);
@@ -198,7 +221,6 @@ public class CrearComboT extends JDialog {
 				}
 				else {
 					int indice = listComponentesCombo.getSelectedIndex();
-					modelDisponibles.addElement(componente); 
 					componentesCarrito.remove(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
 					listComponentesDisponibles.setModel(modelDisponibles);
 					totalPrecio();
@@ -413,7 +435,7 @@ public class CrearComboT extends JDialog {
 							JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}else if(componentesCarrito.isEmpty()) {
 							JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
-						}
+						}else {
 							Tienda.getInstance().getComponentesEnCombo().addAll(componentesCarrito);
 							Tienda.getInstance().getMisComponentes().removeAll(componentesCarrito);
 							Combo combo = new Combo("Combo-"+(textNombreCombo.getText()),Float.valueOf(textPrecio.getText()));
@@ -424,6 +446,7 @@ public class CrearComboT extends JDialog {
 							listComponentesCombo.setModel(modelCarrito);
 							JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
 							clean();
+						}
 						}
 					});
 				};
@@ -548,5 +571,59 @@ public class CrearComboT extends JDialog {
 			textCantMemoria.setText(cantMemoria);
 		}
 		
+	}
+	
+	protected int validacion(Componente componente, Componente componenteEnCombo) {
+		String ram = null;
+		ArrayList<String> conexiones = null;
+		String tipoConector = null;
+		String conexionesDD = null;
+			if(componenteEnCombo instanceof TarjetaMadre) {
+					if(componente instanceof DiscoDuro) {
+						conexiones = ((TarjetaMadre) componenteEnCombo).getListaConexiones();
+						if(!conexiones.contains(((DiscoDuro) componente).getTipoConexion())) {
+							return 1;
+						}
+					}
+					if(componente instanceof Microprocesador) {
+						tipoConector = ((TarjetaMadre) componenteEnCombo).getTipoConector();
+						if(!tipoConector.equalsIgnoreCase(((Microprocesador) componente).getTipoConexion())) {
+							return 2;
+						}
+					}
+					if(componente instanceof MemoriaRam) {
+						ram = ((TarjetaMadre) componenteEnCombo).getTipoMemRam();
+						if(!ram.equalsIgnoreCase(((MemoriaRam) componente).getTipoMemoria()))
+						{
+							return 3;
+						}
+					}
+			}
+			if(componenteEnCombo instanceof DiscoDuro) {
+				if(componente instanceof TarjetaMadre) {
+					/*conexionesDD = ((DiscoDuro) componenteEnCombo).getTipoConexion();
+					if(!conexionesDD.equalsIgnoreCase(((TarjetaMadre)componente).getTipoConector())){
+						return 4;
+					}*/
+				}
+			}
+			if(componenteEnCombo instanceof Microprocesador) {
+				if(componente instanceof TarjetaMadre) {
+					tipoConector = ((Microprocesador) componenteEnCombo).getTipoConexion();
+					if(!tipoConector.equalsIgnoreCase(((TarjetaMadre) componente).getTipoConector())){
+						return 5;
+					}
+				}
+			}
+			if(componenteEnCombo instanceof MemoriaRam) {
+				if(componente instanceof TarjetaMadre) {
+					ram = ((MemoriaRam) componenteEnCombo).getTipoMemoria();
+					if(!ram.equalsIgnoreCase(((TarjetaMadre) componente).getTipoMemRam())){
+						return 6;
+					}
+				}
+			}
+		
+		return 0;
 	}
 }

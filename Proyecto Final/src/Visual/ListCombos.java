@@ -27,6 +27,8 @@ import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ListCombos extends JDialog {
 
@@ -55,7 +57,6 @@ public class ListCombos extends JDialog {
 	private DefaultListModel<String> modelComboDisp = new DefaultListModel<>();
 	private DefaultListModel <String>modelComponenteEnCombo = new DefaultListModel<>();
 	private ArrayList<Componente> componentesEnCombo = new ArrayList<>();
-	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -99,11 +100,10 @@ public class ListCombos extends JDialog {
 			public void mouseClicked(MouseEvent arg0) {
 				String nomb = (String)listCombos.getSelectedValue();
 				Combo combo = Tienda.getInstance().buscarComboPorNombre(nomb);
-				textField.setText(combo.getNombre());
+				
 				//if(combo != null) {
 					TarjetaMadre prueba = new TarjetaMadre((float)1500, "Nomb", "1", "2", "3","4");
 					componentesEnCombo.add(prueba);
-					modelComponenteEnCombo.addElement("Nombre");
 				componentesEnCombo = combo.getMisComponentes();
 				for(Componente comp : componentesEnCombo)
 				{
@@ -142,10 +142,6 @@ public class ListCombos extends JDialog {
 			public void mouseClicked(MouseEvent e) {
 				//mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listComponentesEnCombo.getSelectedValue().toString())));
 				//int indexCompComb = listComponentesEnCombo.getSelectedIndex();
-				
-				String nombComp = (String)listComponentesEnCombo.getSelectedValue();
-				textField.setText(nombComp);
-				String nombtuti = Tienda.getInstance().buscarComponentePorNumSerie("TM-1").getNumSerie();
 
 			//	textRam.setText(nombtuti);
 			//	
@@ -159,7 +155,6 @@ public class ListCombos extends JDialog {
 		});
 		scrollPane_1.setViewportView(listComponentesEnCombo);
 		{
-			mostrarComponentes();
 		}
 		
 		JLabel lblNombreCombo = new JLabel("Combos Disponibles:");
@@ -169,12 +164,6 @@ public class ListCombos extends JDialog {
 		JLabel lblComponentesCombo = new JLabel("Componentes Del Combo: ");
 		lblComponentesCombo.setBounds(413, 11, 256, 14);
 		panel.add(lblComponentesCombo);
-		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setBounds(292, 48, 86, 20);
-		panel.add(textField);
-		textField.setColumns(10);
 		
 		panelTarjetaMadre = new JPanel();
 		panelTarjetaMadre.setLayout(null);
@@ -350,6 +339,11 @@ public class ListCombos extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -365,10 +359,6 @@ public class ListCombos extends JDialog {
 		}
 
 		return codigo;
-	}
-	
-	protected void mostrarComponentes() {
-		modelComponenteEnCombo.addElement("Nombre");
 	}
 	
 	protected void mostrarEspecificaciones(Componente componente) {
