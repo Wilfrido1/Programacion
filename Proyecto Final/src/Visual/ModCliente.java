@@ -3,124 +3,140 @@ package Visual;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import Logico.Cliente;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class ModCliente extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textCedula;
-	private JTextField textNombre;
-	private JTextField textTelefono;
-	private JTextField textDireccion;
+	private JTextField txtCedula;
+	private JTextField txtNombre;
+	private JTextField txtTelefono;
+	private JTextField txtDireccion;
 	private JButton btnModificar;
-	private Cliente cliente = null;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			ModCliente dialog = new ModCliente(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
+	 public static void main(String[] args) { try { ModCliente dialog = new
+	  ModCliente(null); dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	 dialog.setVisible(true); } catch (Exception e) { e.printStackTrace(); } }
+	 
 
 	/**
 	 * Create the dialog.
 	 */
-	public ModCliente(Cliente pCliente) {
-		cliente = pCliente;
-		setBounds(100, 100, 450, 300);
+	public ModCliente(Cliente pCliente){
+		setTitle("Ingrese Los Datos a Modificar");
+		setBounds(100, 100, 522, 216);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel, BorderLayout.CENTER);
-			panel.setLayout(null);
-			
-			JLabel lblCedula = new JLabel("C\u00E9dula: ");
-			lblCedula.setBounds(42, 11, 46, 14);
-			panel.add(lblCedula);
-			
-			JLabel lblNombre = new JLabel("Nombre: ");
-			lblNombre.setBounds(42, 59, 46, 14);
-			panel.add(lblNombre);
-			
-			JLabel lblTelefono = new JLabel("Telefono: ");
-			lblTelefono.setBounds(42, 109, 75, 14);
-			panel.add(lblTelefono);
-			
-			JLabel lblDireccion = new JLabel("Direcci\u00F3n: ");
-			lblDireccion.setBounds(42, 165, 59, 14);
-			panel.add(lblDireccion);
-			
-			textCedula = new JTextField();
-			textCedula.setBounds(127, 8, 130, 20);
-			panel.add(textCedula);
-			textCedula.setColumns(10);
-			
-			textNombre = new JTextField();
-			textNombre.setBounds(127, 56, 130, 20);
-			panel.add(textNombre);
-			textNombre.setColumns(10);
-			
-			textTelefono = new JTextField();
-			textTelefono.setBounds(127, 106, 130, 20);
-			panel.add(textTelefono);
-			textTelefono.setColumns(10);
-			
-			textDireccion = new JTextField();
-			textDireccion.setBounds(127, 162, 227, 20);
-			panel.add(textDireccion);
-			textDireccion.setColumns(10);
-		}
+		contentPanel.setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(10, 11, 486, 122);
+		contentPanel.add(panel);
+		panel.setLayout(null);
+
+		JLabel lblCdula = new JLabel("C\u00E9dula:");
+		lblCdula.setBounds(10, 11, 46, 14);
+		panel.add(lblCdula);
+
+		txtCedula = new JTextField();
+		txtCedula.setEnabled(false);
+		txtCedula.setEditable(false);
+		txtCedula.setBounds(70, 8, 216, 23);
+		panel.add(txtCedula);
+		txtCedula.setColumns(10);
+
+		JLabel lblNombre = new JLabel("Nombre:");
+		lblNombre.setBounds(10, 45, 52, 14);
+		panel.add(lblNombre);
+
+		txtNombre = new JTextField();
+		txtNombre.setBounds(70, 42, 216, 23);
+		panel.add(txtNombre);
+		txtNombre.setColumns(10);
+
+		JLabel lblTelfono = new JLabel("Tel\u00E9fono:");
+		lblTelfono.setBounds(298, 45, 61, 14);
+		panel.add(lblTelfono);
+
+		txtTelefono = new JTextField();
+		txtTelefono.setBounds(361, 42, 115, 23);
+		panel.add(txtTelefono);
+		txtTelefono.setColumns(10);
+
+		JLabel lblDireccin = new JLabel("Direcci\u00F3n:");
+		lblDireccin.setBounds(10, 82, 61, 14);
+		panel.add(lblDireccin);
+
+		txtDireccion = new JTextField();
+		txtDireccion.setBounds(70, 79, 406, 23);
+		panel.add(txtDireccion);
+		txtDireccion.setColumns(10);
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
-			btnModificar = new JButton("Modificar");
-			btnModificar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					cliente.setCedula(textCedula.getText());
-					cliente.setNombre(textNombre.getText());
-					cliente.setTelefono(textTelefono.getText());
-					cliente.setDir(textDireccion.getText());
-					ListCliente.loadClientes();
-					dispose();
-				}
-			});
-			buttonPane.add(btnModificar);
 			{
-				JButton cancelButton = new JButton("Cancel");
+				btnModificar = new JButton("Modificar");
+				btnModificar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(txtCedula.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtNombre.getText().isEmpty() || txtTelefono.getText().isEmpty() ) {
+							JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}else {
+							pCliente.setNombre(txtNombre.getText());
+							pCliente.setDir(txtDireccion.getText());
+							pCliente.setTelefono(txtTelefono.getText());
+							ListadoCliente.loadCliente();
+							dispose();
+						}
+					}
+				});
+				btnModificar.setActionCommand("OK");
+				buttonPane.add(btnModificar);
+				getRootPane().setDefaultButton(btnModificar);
+			}
+			{
+				JButton cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
-		loadCliente();
+		txtCedula.setText(pCliente.getCedula());
+		txtDireccion.setText(pCliente.getDir());
+		txtNombre.setText(pCliente.getNombre());
+		txtTelefono.setText(pCliente.getTelefono());
+
+
 	}
-	
-	private void loadCliente() {
-		if(cliente != null) {
-			textCedula.setText(cliente.getCedula());
-			textNombre.setText(cliente.getNombre());
-			textTelefono.setText(cliente.getTelefono());
-			textDireccion.setText(cliente.getDir());
-		}
-	}
+
+
 }

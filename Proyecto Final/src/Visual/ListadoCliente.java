@@ -7,36 +7,40 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Logico.Cliente;
 import Logico.Tienda;
 
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.border.TitledBorder;
 
-public class ListCliente extends JDialog {
+public class ListadoCliente extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	private JTable table;
 	private static DefaultTableModel model;
-	private static Object row[];
-	private JButton btnModificar;
+	private static Object rows[];
+	private JButton btnUpdate;
 	private Cliente selected = null;
-	private static JTable table;
-	
+	private int indx;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			ListCliente dialog = new ListCliente();
+			ListadoCliente dialog = new ListadoCliente();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -47,9 +51,9 @@ public class ListCliente extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ListCliente() {
+	public ListadoCliente() {
 		setTitle("Listado de Clientes");
-		setBounds(100, 100, 583, 300);
+		setBounds(100, 100, 581, 345);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -62,70 +66,78 @@ public class ListCliente extends JDialog {
 			panel.setLayout(new BorderLayout(0, 0));
 			{
 				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-				panel.add(scrollPane);
+				panel.add(scrollPane, BorderLayout.CENTER);
 				{
-					model = new DefaultTableModel();
-					String headers[] = {"Cedula", "Nombre", "Telefono", "Dirección"};
-					model.setColumnIdentifiers(headers);
+					String[] headers = {"Cédula","Nombre","Dirección","Teléfono"};
+
 					table = new JTable();
 					table.addMouseListener(new MouseAdapter() {
 						@Override
-						public void mouseClicked(MouseEvent arg0) {
+						public void mouseClicked(MouseEvent e) {
 							int index = table.getSelectedRow();
 							if(index >= 0) {
-								btnModificar.setEnabled(true);
+								btnUpdate.setEnabled(true);
 								String cedula = table.getValueAt(index, 0).toString();
 								selected = Tienda.getInstance().buscarClientePorCedula(cedula);
 							}
 						}
 					});
 					table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-					table.setModel(model);
 					scrollPane.setViewportView(table);
+
+					model = new DefaultTableModel();
+					model.setColumnIdentifiers(headers);
+					table.setModel(model);
 				}
 			}
 		}
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				btnModificar = new JButton("Modificar");
-				btnModificar.setEnabled(false);
-				btnModificar.addActionListener(new ActionListener() {
+				btnUpdate = new JButton("Modificar");
+				btnUpdate.setEnabled(false);
+				btnUpdate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModCliente ModC = new ModCliente(selected);
-						ModC.setModal(true);
-						ModC.setVisible(true);
+						indx = table.getSelectedRow();
+						if( indx == -1) {
+							JOptionPane.showMessageDialog(null, "NING\u00daN CLIENTE SELECCIONADO", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}else{
+							ModCliente modCliente =  new ModCliente(selected);
+							modCliente.setModal(true);
+							modCliente.setVisible(true);
+						}
 					}
 				});
-				btnModificar.setEnabled(false);
-				buttonPane.add(btnModificar);
+				btnUpdate.setActionCommand("OK");
+				buttonPane.add(btnUpdate);
+				getRootPane().setDefaultButton(btnUpdate);
 			}
 			{
-				JButton cancelButton = new JButton("Cancelar");
-				cancelButton.addActionListener(new ActionListener() {
+				JButton btnCancelar = new JButton("Cancelar");
+				btnCancelar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				btnCancelar.setActionCommand("Cancel");
+				buttonPane.add(btnCancelar);
 			}
 		}
-	}
-	
-	public static void loadClientes() {
-		row = new Object[model.getColumnCount()];
-		model.setRowCount(0);
-		for(Cliente aux : Tienda.getInstance().getMisClientes()) {
-			row[0] = aux.getCedula();
-			row[1] = aux.getNombre();
-			row[2] = aux.getTelefono();
-			row[3] = aux.getDir();
-			model.addRow(row);
-		}
+		loadCliente();
 	}
 
+	public static void loadCliente() {
+		model.setRowCount(0);
+		rows = new Object[model.getColumnCount()];
+		for (Cliente aux: Tienda.getInstance().getMisClientes()) {
+			rows[0] = aux.getCedula();
+			rows[1] = aux.getNombre();
+			rows[2] = aux.getDir();
+			rows[3] = aux.getTelefono();
+			model.addRow(rows);
+		}
+	}
 }

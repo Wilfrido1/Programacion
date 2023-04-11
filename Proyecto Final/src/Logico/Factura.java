@@ -9,6 +9,7 @@ public class Factura {
 	private ArrayList<Componente> misComponentes;
 	private Cliente cliente;
 	private ArrayList<Combo> misCombos;
+	private float precio;
 	
 	public Factura(String codigo, Cliente cliente) {
 		super();
@@ -34,9 +35,39 @@ public class Factura {
 		return cliente;
 	}
 	
-	public ArrayList<Combo> misCombos(){
+	public float getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(float precio) {
+		this.precio = precio;
+	}
+
+	public ArrayList<Combo> getMisCombos() {
 		return misCombos;
 	}
+
+	public void setMisCombos(ArrayList<Combo> misCombos) {
+		this.misCombos = misCombos;
+	}
+
+	public void calcPrecio() {
+		// TODO Auto-generated method stub
+		float total = 0;
+		
+		for (Componente componente : misComponentes) {
+			total+= componente.getPrecio();
+		}
+		
+		for (Combo combo : misCombos) {
+			total+= combo.getPrecio();
+		}
+		
+		precio = total;
+		
+	}
+	
+	
 
 
 }

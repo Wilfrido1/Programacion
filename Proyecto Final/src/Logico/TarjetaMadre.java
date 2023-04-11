@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class TarjetaMadre extends Componente{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4790076238054815076L;
 	private String tipoConector;
 	private String tipoMemRam;
 	private ArrayList<String> listaConexiones;

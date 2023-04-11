@@ -232,6 +232,7 @@ public class PedirComponente extends JDialog {
 				pnlMicroprocesador.setVisible(false);
 				pnlTarjetaMadre.setVisible(true);
 				pnlDiscoDuro.setVisible(false);
+				updateCodigo();
 			}
 		});
 		rdbTarjetaMadre.setSelected(true);

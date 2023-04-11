@@ -1,5 +1,8 @@
 package Logico;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
@@ -33,6 +36,9 @@ public class Tienda {
 		}
 		return tienda;
 	}
+	
+	
+	
 
 
 	public ArrayList<Factura> getMisFacturas() {
@@ -177,9 +183,9 @@ public class Tienda {
 		misCombos.add(combo);
 	}
 	
-	public Combo buscarComboPorNombre(String Nombre) {
+	public Combo buscarComboPorNombre(String nombre) {
 		for(Combo combo : misCombos) {
-			if(combo.getNombre().equals(Nombre)) {
+			if(combo.getNombre().equalsIgnoreCase(nombre)) {
 				return combo;
 			}
 		}
@@ -201,6 +207,99 @@ public class Tienda {
 		misFacturas.add(factura);
 		Factura.numeroFactura++;
 		
+	}
+
+
+	public float ingresosTotales() {
+		// TODO Auto-generated method stub
+		float total = 0;
+		for (Componente componente : componentesVendidos) {
+			total+= componente.getPrecio();
+		}
+		
+		for (Combo combo : combosVendidos) {
+			total+= combo.getPrecio();
+		}
+		return total;
+	}
+
+
+	public int cantVendidosByComponente(String tipoComponente) {
+		// TODO Auto-generated method stub
+		int cant = 0;
+		if(tipoComponente.equalsIgnoreCase("TM")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof TarjetaMadre) {
+					cant++;
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("DD")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof DiscoDuro) {
+					cant++;
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("MR")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof MemoriaRam) {
+					cant++;
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("MP")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof Microprocesador) {
+					cant++;
+				}
+			}
+		}
+		
+		return cant;
+	}
+
+
+	public float dineroGeneradoByComponente(String tipoComponente) {
+		// TODO Auto-generated method stub
+		float total = 0;
+		if(tipoComponente.equalsIgnoreCase("TM")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof TarjetaMadre) {
+					total+= componente.getPrecio();
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("DD")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof DiscoDuro) {
+					total+= componente.getPrecio();
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("MR")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof MemoriaRam) {
+					total+= componente.getPrecio();
+				}
+			}
+		}
+		
+		if(tipoComponente.equalsIgnoreCase("MP")) {
+			for (Componente componente : componentesVendidos) {
+				if(componente instanceof Microprocesador) {
+					total+= componente.getPrecio();
+				}
+			}
+		}
+		
+		
+		return total;
 	}
 	
 	

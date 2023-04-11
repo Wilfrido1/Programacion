@@ -15,6 +15,7 @@ import javax.swing.border.TitledBorder;
 
 
 import Logico.Cliente;
+import Logico.Combo;
 import Logico.Componente;
 import Logico.DiscoDuro;
 import Logico.Factura;
@@ -53,8 +54,10 @@ public class Facturar extends JDialog {
 	private JScrollPane scrollPane_1;
 	private JTextField txtTotal;
 	private ArrayList<Componente> componentesCarrito;
+	private ArrayList<Combo> combosCarrito;
 	private DefaultListModel<String> modelCarrito;
 	private DefaultListModel <String>modelDisponibles;
+	private DefaultListModel <String>modelCombos;
 	private JButton btnFacturar;
 	private JPanel pnlMicroprocesador;
 	private JPanel pnlMemoriaRam;
@@ -104,10 +107,12 @@ public class Facturar extends JDialog {
 	 * Create the dialog.
 	 */
 	public Facturar() {
-		setTitle("Facturacion de Quesos");
+		setTitle("Facturacion de Componentes");
 		componentesCarrito = new ArrayList<>();
+		combosCarrito = new ArrayList<>();
 		modelCarrito = new DefaultListModel<String>();
 		modelDisponibles = new DefaultListModel<String>();
+		modelCombos = new DefaultListModel<String>();
 		setBounds(100, 100, 744, 572);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
@@ -210,7 +215,12 @@ public class Facturar extends JDialog {
 		listDisponibles.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listDisponibles.getSelectedValue())));
+				if(selectedEsComponenteOcombo(listDisponibles.getSelectedValue().toString()) == 1) {
+					mostrarEspecificaciones(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(listDisponibles.getSelectedValue())));
+				}
+				else {
+					pnlTarjetaMadre.setVisible(false);
+				}
 			}
 		});
 		scrollPane.setViewportView(listDisponibles);
@@ -221,6 +231,12 @@ public class Facturar extends JDialog {
 				modelDisponibles.addElement(componente);
 			}
 			listDisponibles.setModel(modelDisponibles);
+			
+			String combo = null;
+			for (Combo aux : Tienda.getInstance().getMisCombos()) {
+				combo = aux.getNombre();
+				modelCombos.addElement(combo);
+			}
 
 		}
 
@@ -245,9 +261,9 @@ public class Facturar extends JDialog {
 
 
 					if(listDisponibles.getSelectedIndex() == -1) {
-						JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE SELECCIONADO" , "ERROR", HEIGHT);
+						JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE/COMBO SELECCIONADO" , "ERROR", HEIGHT);
 					}
-					else {
+					else if (cbxFiltro.getSelectedIndex() == 0) {
 						int indice = listDisponibles.getSelectedIndex();
 						modelCarrito.addElement(componente); 
 						componentesCarrito.add(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
@@ -259,6 +275,14 @@ public class Facturar extends JDialog {
 						}
 						listDisponibles.setModel(modelDisponibles);
 						activarFacturar();
+					}else if(cbxFiltro.getSelectedIndex() == 1) {
+						
+						modelCarrito.addElement(componente); 
+						combosCarrito.add(Tienda.getInstance().buscarComboPorNombre(listDisponibles.getSelectedValue().toString()));
+						listCarrito.setModel(modelCarrito);
+						totalCarrito();
+						listDisponibles.setModel(modelCombos);
+						activarFacturar();
 					}
 				}
 			}
@@ -269,16 +293,28 @@ public class Facturar extends JDialog {
 		JButton btnIzquierda = new JButton("<<");
 		btnIzquierda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String componente = listCarrito.getSelectedValue();
+				
 
 				if(listCarrito.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE SELECCIONADO" , "ERROR", HEIGHT);
+					JOptionPane.showMessageDialog(rootPane, "NING\u00daN COMPONENTE/COMBO SELECCIONADO" , "ERROR", HEIGHT);
 				}
-				else {
+				else if(selectedEsComponenteOcombo(listCarrito.getSelectedValue()) == 1){
+					String componente = listCarrito.getSelectedValue();
 					int indice = listCarrito.getSelectedIndex();
 					modelDisponibles.addElement(componente); 
 					componentesCarrito.remove(Tienda.getInstance().buscarComponentePorNumSerie(codigoByComponente(componente)));
-					listDisponibles.setModel(modelDisponibles);
+					loadDisponibles(0);
+					totalCarrito();
+
+					if(modelCarrito.getSize() !=0) {
+						modelCarrito.removeElementAt(indice);
+					}
+					listCarrito.setModel(modelCarrito);
+				}else if(selectedEsComponenteOcombo(listCarrito.getSelectedValue()) == 2) {
+					String combo = listCarrito.getSelectedValue();
+					int indice = listCarrito.getSelectedIndex();
+					combosCarrito.remove(Tienda.getInstance().buscarComboPorNombre(combo));
+					loadDisponibles(1);
 					totalCarrito();
 
 					if(modelCarrito.getSize() !=0) {
@@ -514,23 +550,60 @@ public class Facturar extends JDialog {
 						if(txtCedula.getText().isEmpty() || txtDireccion.getText().isEmpty() || txtNombre.getText().isEmpty() || txtTelefono.getText().isEmpty() ) {
 							JOptionPane.showMessageDialog(null, "LLENE TODOS LOS CAMPOS", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}else if(componentesCarrito.isEmpty()) {
-							JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES/COMBOS EN EL CARRITO", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}else {
 							if(!Tienda.getInstance().clienteExiste(txtCedula.getText())) {
 								Cliente cliente = new Cliente(txtCedula.getText(),txtNombre.getText(),txtDireccion.getText(), txtTelefono.getText());
 								Tienda.getInstance().registrarCliente(cliente);
+								
+							}
+							if(combosCarrito.isEmpty()) {
+								Tienda.getInstance().getComponentesVendidos().addAll(componentesCarrito);
+								Tienda.getInstance().getMisComponentes().removeAll(componentesCarrito);
+								Tienda.getInstance().getCombosVendidos().addAll(combosCarrito);
+								Factura factura = new Factura("Factura-"+Integer.toString(Factura.numeroFactura),Tienda.getInstance().buscarClientePorCedula(txtCedula.getText()));
+								factura.getMisComponentes().addAll(componentesCarrito);
+								factura.getMisCombos().addAll(combosCarrito);
+								Tienda.getInstance().insertarFactura(factura);
+								factura.calcPrecio();
+								componentesCarrito.removeAll(componentesCarrito);
+								combosCarrito.removeAll(combosCarrito);
+								modelCarrito.removeAllElements();
+								listCarrito.setModel(modelCarrito);
+								JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
+								clean();
+							}else {
+								//VALIDAR == 0 NO HAY COMPONENTES
+								//VALIDAR == 1 HAY COMPONENTES
+								int validar = 1;
+								for (Combo combo : combosCarrito) {
+									for (Componente componente : combo.getMisComponentes()) {
+										if(!Tienda.getInstance().getMisComponentes().contains(componente)) {
+											JOptionPane.showMessageDialog(null, "NO HAY COMPONENTES DISPONIBLES PARA HACER EL COMBO "+ combo.getNombre(), "ERROR", JOptionPane.ERROR_MESSAGE);
+											validar = 0;
+										}
+									}
+								}
+								
+								if(validar == 1) {
+									Tienda.getInstance().getComponentesVendidos().addAll(componentesCarrito);
+									Tienda.getInstance().getMisComponentes().removeAll(componentesCarrito);
+									Tienda.getInstance().getCombosVendidos().addAll(combosCarrito);
+									Factura factura = new Factura("Factura-"+Integer.toString(Factura.numeroFactura),Tienda.getInstance().buscarClientePorCedula(txtCedula.getText()));
+									factura.getMisComponentes().addAll(componentesCarrito);
+									factura.getMisCombos().addAll(combosCarrito);
+									Tienda.getInstance().insertarFactura(factura);
+									factura.calcPrecio();
+									componentesCarrito.removeAll(componentesCarrito);
+									combosCarrito.removeAll(combosCarrito);
+									modelCarrito.removeAllElements();
+									listCarrito.setModel(modelCarrito);
+									JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
+									clean();
+								}
 							}
 
-							Tienda.getInstance().getComponentesVendidos().addAll(componentesCarrito);
-							Tienda.getInstance().getMisComponentes().removeAll(componentesCarrito);
-							Factura factura = new Factura("Factura-"+Integer.toString(Factura.numeroFactura),Tienda.getInstance().buscarClientePorCedula(txtCedula.getText()));
-							factura.getMisComponentes().addAll(componentesCarrito);
-							Tienda.getInstance().insertarFactura(factura);
-							componentesCarrito.removeAll(componentesCarrito);
-							modelCarrito.removeAllElements();
-							listCarrito.setModel(modelCarrito);
-							JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
-							clean();
+							
 						}
 					}
 				});
@@ -555,11 +628,13 @@ public class Facturar extends JDialog {
 		// TODO Auto-generated method stub
 		if(index == 0) {
 			lblComponentesDisponibles.setText("Componentes Disponibles");
+			listDisponibles.removeAll();
 			listDisponibles.setModel(modelDisponibles);
 		}
 		if(index == 1) {
 			lblComponentesDisponibles.setText("Combos Disponibles");
-			listDisponibles.setModel(modelCarrito);
+			listDisponibles.removeAll();
+			listDisponibles.setModel(modelCombos);
 		}
 		
 	}
@@ -569,20 +644,12 @@ public class Facturar extends JDialog {
 		for (Componente componente : componentesCarrito) {
 			total+= componente.getPrecio();
 		}
-
-		txtTotal.setText(Float.toString(total));
-	}
-
-
-	protected String codigoByQueso(String queso) {
-		int indice = queso.indexOf(" ");
-		String codigo = null;
-
-		if(indice != -1) {
-			codigo = queso.substring(0, indice);
+		
+		for (Combo combo : combosCarrito) {
+			total+= combo.getPrecio();
 		}
 
-		return codigo;
+		txtTotal.setText(Float.toString(total));
 	}
 
 	protected void activarFacturar() {
@@ -606,6 +673,7 @@ public class Facturar extends JDialog {
 		txtTelefono.setEnabled(false);
 		txtTelefono.setEditable(false);
 		txtTotal.setText(null);
+		
 
 		btnBuscar.setEnabled(true);
 
@@ -702,5 +770,17 @@ public class Facturar extends JDialog {
 			
 			
 		}
+	}
+	private int selectedEsComponenteOcombo(String string) {
+		// TODO Auto-generated method stub
+		//RETORNA 1 SI ES UN COMPONENTE
+		// RETORNA 2 SI ES UN CONMBO
+		int opc = 1;
+		String corte = string.substring(0, 4);
+		if(corte.equalsIgnoreCase("Combo")) {
+			opc = 2;
+		}
+		
+		return opc;
 	}
 }

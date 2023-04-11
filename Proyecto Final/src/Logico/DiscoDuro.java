@@ -2,6 +2,10 @@ package Logico;
 
 public class DiscoDuro extends Componente {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 546221944046415431L;
 	private float capAlmacenamiento;
 	private String unidadMedicion;
 	private String tipoConexion;
