@@ -158,6 +158,9 @@ public class Principal extends JFrame {
 		JMenuItem mntmListadoComponente = new JMenuItem("Listado de componentes");
 		mntmListadoComponente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ListadoComponente listaComp = new ListadoComponente();
+				listaComp.setModal(true);
+				listaComp.setVisible(true);
 			}
 		});
 		mnComponentes.add(mntmListadoComponente);

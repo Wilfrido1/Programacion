@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -75,6 +76,7 @@ public class ListCombos extends JDialog {
 	 * Create the dialog.
 	 */
 	public ListCombos() {
+		setTitle("Lista de Combos");
 		setBounds(100, 100, 715, 393);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

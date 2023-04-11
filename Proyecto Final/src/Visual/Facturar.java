@@ -39,6 +39,7 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 public class Facturar extends JDialog {
 

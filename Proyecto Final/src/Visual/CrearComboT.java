@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CrearComboT extends JDialog {
@@ -92,6 +93,7 @@ public class CrearComboT extends JDialog {
 	 * Create the dialog.
 	 */
 	public CrearComboT() {
+
 		setTitle("Creaci\u00F3n de Combos");
 		componentesCarrito = new ArrayList<>();
 		modelCarrito = new DefaultListModel<String>();
@@ -447,6 +449,7 @@ public class CrearComboT extends JDialog {
 							JOptionPane.showMessageDialog(null, "Operación Exitosa", "Información", JOptionPane.INFORMATION_MESSAGE);
 							clean();
 						}
+
 						}
 					});
 				};
