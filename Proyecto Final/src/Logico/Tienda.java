@@ -3,11 +3,18 @@ package Logico;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import Visual.PedirComponente;
 
-public class Tienda {
 
+public class Tienda implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1535241657301212230L;
 	private ArrayList<Factura> misFacturas;
 	private ArrayList<Cliente> misClientes;
 	private ArrayList<Componente> misComponentes;
@@ -16,6 +23,8 @@ public class Tienda {
 	private ArrayList<Combo> combosVendidos;
 	private ArrayList<Componente> componentesVendidos;
 	private ArrayList<Componente> componentesEnCombo;
+	private ArrayList<User> misUsers;
+	private static User loginUser;
 	public static int codigo = 1;
 
 	public Tienda() {
@@ -27,6 +36,7 @@ public class Tienda {
 		componentesVendidos = new ArrayList<>();
 		componentesEnCombo = new ArrayList<>();
 		misCombos = new ArrayList<>();
+		misUsers = new ArrayList<>();
 	}
 
 
@@ -36,9 +46,9 @@ public class Tienda {
 		}
 		return tienda;
 	}
-	
-	
-	
+
+
+
 
 
 	public ArrayList<Factura> getMisFacturas() {
@@ -89,7 +99,7 @@ public class Tienda {
 	public void setCombosVendidos(ArrayList<Combo> combosVendidos) {
 		this.combosVendidos = combosVendidos;
 	}
-	
+
 	public void addCombo(Combo combo) {
 		misCombos.add(combo);
 	}
@@ -97,7 +107,7 @@ public class Tienda {
 	public ArrayList<Componente> getComponentesEnCombo(){
 		return componentesEnCombo;
 	}
-	
+
 	public void setComponentesEnCombo(ArrayList<Componente> componentesEnCombo) {
 		this.componentesEnCombo = componentesEnCombo;
 	}
@@ -150,11 +160,11 @@ public class Tienda {
 		//combo.setMisComponentes(componentes);
 		return 1;
 	}
-	
+
 	public void registrarCliente(Cliente cliente) {
 		misClientes.add(cliente);
 	}
-	
+
 	public Cliente buscarClientePorCedula(String Cedula) {
 		for(Cliente cliente : misClientes) {
 			if(cliente.getCedula().equals(Cedula)) {
@@ -168,21 +178,21 @@ public class Tienda {
 		misComponentes.add(componente);
 		codigo++;
 	}
-	
+
 	public Componente buscarComponentePorNumSerie(String numSerie){
-	  	for(Componente componente: misComponentes){
-	  		if(componente.getNumSerie().equals(numSerie)){
-	  			return componente;
-	  		}
-	  	}
-	  	return null;
-	  }
-	 
-	
+		for(Componente componente: misComponentes){
+			if(componente.getNumSerie().equals(numSerie)){
+				return componente;
+			}
+		}
+		return null;
+	}
+
+
 	public void registrarCombo(Combo combo) {
 		misCombos.add(combo);
 	}
-	
+
 	public Combo buscarComboPorNombre(String nombre) {
 		for(Combo combo : misCombos) {
 			if(combo.getNombre().equalsIgnoreCase(nombre)) {
@@ -191,7 +201,7 @@ public class Tienda {
 		}
 		return null;
 	}
-	
+
 	public boolean clienteExiste(String cedula) {
 		for (Cliente cliente : misClientes) {
 			if(cliente.getCedula().equalsIgnoreCase(cedula)) {
@@ -206,7 +216,7 @@ public class Tienda {
 		// TODO Auto-generated method stub
 		misFacturas.add(factura);
 		Factura.numeroFactura++;
-		
+
 	}
 
 
@@ -216,7 +226,7 @@ public class Tienda {
 		for (Componente componente : componentesVendidos) {
 			total+= componente.getPrecio();
 		}
-		
+
 		for (Combo combo : combosVendidos) {
 			total+= combo.getPrecio();
 		}
@@ -234,7 +244,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("DD")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof DiscoDuro) {
@@ -242,7 +252,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("MR")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof MemoriaRam) {
@@ -250,7 +260,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("MP")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof Microprocesador) {
@@ -258,7 +268,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		return cant;
 	}
 
@@ -273,7 +283,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("DD")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof DiscoDuro) {
@@ -281,7 +291,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("MR")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof MemoriaRam) {
@@ -289,7 +299,7 @@ public class Tienda {
 				}
 			}
 		}
-		
+
 		if(tipoComponente.equalsIgnoreCase("MP")) {
 			for (Componente componente : componentesVendidos) {
 				if(componente instanceof Microprocesador) {
@@ -297,12 +307,81 @@ public class Tienda {
 				}
 			}
 		}
-		
-		
+
+
 		return total;
 	}
+
+	public static void setTienda(Tienda tienda) {
+		Tienda.tienda = tienda;	
+	}
 	
-	
+	public void inicializarCodigos() {
+		contarComponentes();
+		contarFactura();		
+	}
+
+
+	private void contarFactura() {
+		// TODO Auto-generated method stub
+		int i=0;
+		for (Factura factura : misFacturas) {
+			i++;
+		}
+		Factura.numeroFactura=i+1;
+	}
+
+
+	private void contarComponentes() {
+		// TODO Auto-generated method stub
+		int i=0;
+		for (Componente componente : misComponentes) {
+			i++;
+		}
+		codigo=i+1;
+		
+	}
+
+
+	public void regUser(User aux) {
+		// TODO Auto-generated method stub
+		misUsers.add(aux);
+		
+	}
+
+
+	public boolean confirmarLogin(String text, String text2) {
+		boolean login = false;
+		for (User user : misUsers) {
+			if(user.getUserName().equals(text) && user.getPass().equals(text2)){
+				loginUser = user;
+				login = true;
+			}
+		}
+		return login;
+	}
+
+
+	public ArrayList<User> getMisUsers() {
+		return misUsers;
+	}
+
+
+	public void setMisUsers(ArrayList<User> misUsers) {
+		this.misUsers = misUsers;
+	}
+
+
+	public static User getLoginUser() {
+		return loginUser;
+	}
+
+
+	public static void setLoginUser(User loginUser) {
+		Tienda.loginUser = loginUser;
+	}
+
+
 
 }
 

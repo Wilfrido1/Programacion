@@ -10,15 +10,20 @@ import javax.swing.border.EmptyBorder;
 
 import Logico.Cliente;
 import Logico.Tienda;
+import Logico.User;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.awt.event.ActionEvent;
@@ -41,6 +46,38 @@ public class Principal extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				FileInputStream admin;
+				FileOutputStream admin2;
+				ObjectInputStream adminRead;
+				ObjectOutputStream adminWrite;
+				try {
+					admin = new FileInputStream ("admin.dat");
+					adminRead = new ObjectInputStream(admin);
+					Tienda temp = (Tienda)adminRead.readObject();
+					Tienda.setTienda(temp);
+					Tienda.getInstance().inicializarCodigos();
+					admin.close();
+					adminRead.close();
+				} catch (FileNotFoundException e) {
+					try {
+						admin2 = new  FileOutputStream("admin.dat");
+						User aux = new User("Administrador", "adm", "adm");
+						Tienda.getInstance().regUser(aux);
+						adminWrite = new ObjectOutputStream(admin2);
+						adminWrite.writeObject(Tienda.getInstance());
+						admin2.close();
+						adminWrite.close();
+					} catch (FileNotFoundException e1) {
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+					}
+				} catch (IOException e) {
+
+
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -49,7 +86,7 @@ public class Principal extends JFrame {
 	 * Create the frame.
 	 * @throws IOException 
 	 */
-	public Principal() throws IOException {
+	public Principal() {
 		setTitle("Empresa de Componentes de PC");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 815, 564);
@@ -57,16 +94,36 @@ public class Principal extends JFrame {
 		setSize(dim.width, dim.height-50);
 		setLocationRelativeTo(null);
 		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				FileOutputStream queseria2;
+				ObjectOutputStream queseriaWrite;
+				try {
+					queseria2 = new  FileOutputStream("admin.dat");
+					queseriaWrite = new ObjectOutputStream(queseria2);
+					queseriaWrite.writeObject(Tienda.getInstance());
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
+
 		
-		File file = new File("misClientes.dat");
-		FileOutputStream f = new FileOutputStream(file);
-		ObjectOutputStream oos = new ObjectOutputStream(f);
 		
-		oos.writeInt(Tienda.getInstance().getMisClientes().size());
-		for (Cliente person : Tienda.getInstance().getMisClientes()) {
-			oos.writeObject(person);
-		}
-		oos.close();
+		/*
+		 * File file = new File("misClientes.dat"); FileOutputStream f = new
+		 * FileOutputStream(file); ObjectOutputStream oos = new ObjectOutputStream(f);
+		 * 
+		 * oos.writeInt(Tienda.getInstance().getMisClientes().size()); for (Cliente
+		 * person : Tienda.getInstance().getMisClientes()) { oos.writeObject(person); }
+		 * oos.close();
+		 */
 
 		
 		JMenuBar menuBar = new JMenuBar();

@@ -473,7 +473,7 @@ public class PedirComponente extends JDialog {
 		updateCodigo();	
 	}
 
-	private void updateCodigo() {
+	public void updateCodigo() {
 		String pre = "";
 		if(rdbTarjetaMadre.isSelected()) {
 			pre = "TM";
